@@ -47,16 +47,13 @@ const portfolioItems = [
 
 const PortfolioSection = () => {
   return (
-    <section id="portofoliu" className="py-20 lg:py-32 relative">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-glow opacity-50" />
-
+    <section id="portofoliu" className="py-20 lg:py-28 relative bg-background">
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <span className="text-primary font-medium text-sm uppercase tracking-wider">Portofoliu</span>
+        <div className="text-center mb-14">
+          <span className="text-primary font-semibold text-sm uppercase tracking-widest">Portofoliu</span>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mt-4 mb-6">
-            Proiecte <span className="text-gradient">Realizate</span>
+            Proiecte Realizate
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             Fiecare proiect este unic și creat cu atenție la detalii pentru a răspunde 
@@ -69,21 +66,20 @@ const PortfolioSection = () => {
           {portfolioItems.map((item, index) => (
             <div
               key={index}
-              className="group glass-card rounded-2xl overflow-hidden hover-glow cursor-pointer"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className="group card-professional rounded-xl overflow-hidden hover-lift cursor-pointer"
             >
               {/* Image */}
-              <div className="relative h-48 lg:h-56 overflow-hidden">
+              <div className="relative h-48 lg:h-52 overflow-hidden">
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
                 
                 {/* Overlay Icon */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center glow-effect">
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-primary/20">
+                  <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
                     <ExternalLink className="w-5 h-5 text-primary-foreground" />
                   </div>
                 </div>
@@ -91,7 +87,7 @@ const PortfolioSection = () => {
 
               {/* Content */}
               <div className="p-6">
-                <span className="text-primary text-sm font-medium">{item.category}</span>
+                <span className="text-primary text-sm font-semibold">{item.category}</span>
                 <h3 className="font-display text-xl font-semibold mt-2 mb-3 text-foreground group-hover:text-primary transition-colors">
                   {item.title}
                 </h3>
@@ -102,7 +98,7 @@ const PortfolioSection = () => {
                   {item.tags.map((tag, tagIndex) => (
                     <span
                       key={tagIndex}
-                      className="px-3 py-1 text-xs rounded-full bg-muted text-muted-foreground"
+                      className="px-3 py-1 text-xs rounded-md bg-secondary text-muted-foreground font-medium"
                     >
                       {tag}
                     </span>

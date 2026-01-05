@@ -5,7 +5,7 @@ const pricingPlans = [
   {
     name: "Starter",
     description: "Perfect pentru freelanceri și afaceri mici",
-    price: "499",
+    price: "2.499",
     period: "proiect",
     features: [
       "Site one-page responsive",
@@ -18,7 +18,7 @@ const pricingPlans = [
     ],
     popular: false,
     hosting: {
-      price: "99",
+      price: "499",
       period: "an",
       features: ["5GB spațiu", "10GB trafic/lună", "1 email inclus"],
     },
@@ -26,7 +26,7 @@ const pricingPlans = [
   {
     name: "Business",
     description: "Ideal pentru companii în creștere",
-    price: "999",
+    price: "4.999",
     period: "proiect",
     features: [
       "Site multi-pagină (până la 10)",
@@ -41,7 +41,7 @@ const pricingPlans = [
     ],
     popular: true,
     hosting: {
-      price: "199",
+      price: "999",
       period: "an",
       features: ["20GB spațiu", "100GB trafic/lună", "5 email-uri", "Backup zilnic"],
     },
@@ -49,7 +49,7 @@ const pricingPlans = [
   {
     name: "Enterprise",
     description: "Soluții complete pentru afaceri mari",
-    price: "2499",
+    price: "12.499",
     period: "proiect",
     features: [
       "Site nelimitat pagini",
@@ -65,7 +65,7 @@ const pricingPlans = [
     ],
     popular: false,
     hosting: {
-      price: "399",
+      price: "1.999",
       period: "an",
       features: ["100GB spațiu", "Trafic nelimitat", "Email-uri nelimitate", "Backup orar", "CDN Global"],
     },
@@ -74,16 +74,13 @@ const pricingPlans = [
 
 const PricingSection = () => {
   return (
-    <section id="preturi" className="py-20 lg:py-32 relative">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-glow opacity-30" />
-
+    <section id="preturi" className="py-20 lg:py-28 relative bg-background">
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <span className="text-primary font-medium text-sm uppercase tracking-wider">Prețuri</span>
+        <div className="text-center mb-14">
+          <span className="text-primary font-semibold text-sm uppercase tracking-widest">Prețuri</span>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mt-4 mb-6">
-            Pachete <span className="text-gradient">Transparente</span>
+            Pachete Transparente
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             Alegem împreună pachetul potrivit pentru afacerea ta. 
@@ -92,25 +89,25 @@ const PricingSection = () => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid lg:grid-cols-3 gap-8 lg:gap-6 max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
           {pricingPlans.map((plan, index) => (
             <div
               key={index}
-              className={`relative glass-card rounded-2xl p-8 ${
-                plan.popular ? "ring-2 ring-primary glow-effect" : ""
+              className={`relative card-professional rounded-xl p-8 ${
+                plan.popular ? "ring-2 ring-primary" : ""
               }`}
             >
               {/* Popular Badge */}
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="bg-primary text-primary-foreground text-sm font-semibold px-4 py-1 rounded-full">
+                  <span className="bg-primary text-primary-foreground text-sm font-semibold px-4 py-1.5 rounded-full">
                     Cel mai popular
                   </span>
                 </div>
               )}
 
               {/* Plan Header */}
-              <div className="text-center mb-8">
+              <div className="text-center mb-8 pt-2">
                 <h3 className="font-display text-2xl font-bold text-foreground mb-2">{plan.name}</h3>
                 <p className="text-muted-foreground text-sm">{plan.description}</p>
               </div>
@@ -118,8 +115,8 @@ const PricingSection = () => {
               {/* Price */}
               <div className="text-center mb-8">
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-5xl font-display font-bold text-gradient">{plan.price}</span>
-                  <span className="text-muted-foreground">€</span>
+                  <span className="text-4xl font-display font-bold text-primary">{plan.price}</span>
+                  <span className="text-muted-foreground text-lg">lei</span>
                 </div>
                 <span className="text-muted-foreground text-sm">/{plan.period}</span>
               </div>
@@ -141,12 +138,12 @@ const PricingSection = () => {
                 <div className="text-center mb-4">
                   <span className="text-sm text-muted-foreground">Reînnoire hosting anual:</span>
                   <div className="font-display font-bold text-foreground">
-                    {plan.hosting.price}€<span className="text-muted-foreground font-normal">/{plan.hosting.period}</span>
+                    {plan.hosting.price} lei<span className="text-muted-foreground font-normal">/{plan.hosting.period}</span>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {plan.hosting.features.map((feature, hIndex) => (
-                    <span key={hIndex} className="text-xs px-2 py-1 bg-muted rounded-md text-muted-foreground">
+                    <span key={hIndex} className="text-xs px-2 py-1 bg-secondary rounded-md text-muted-foreground">
                       {feature}
                     </span>
                   ))}
@@ -155,7 +152,7 @@ const PricingSection = () => {
 
               {/* CTA Button */}
               <Button
-                variant={plan.popular ? "hero" : "outline"}
+                variant={plan.popular ? "professional" : "outline"}
                 size="lg"
                 className="w-full"
               >
@@ -168,7 +165,7 @@ const PricingSection = () => {
         {/* Additional Info */}
         <div className="text-center mt-12">
           <p className="text-muted-foreground">
-            Ai nevoie de ceva personalizat? <a href="#contact" className="text-primary hover:underline">Contactează-ne</a> pentru o ofertă specială.
+            Ai nevoie de ceva personalizat? <a href="#contact" className="text-primary hover:underline font-medium">Contactează-ne</a> pentru o ofertă specială.
           </p>
         </div>
       </div>
