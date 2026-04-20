@@ -2,6 +2,7 @@ import type { AuditResult, Category, Issue } from "./types";
 import { detectTechnologies } from "./detectTech";
 import { estimateWebVitals } from "./webVitals";
 import { lookupDns, type DnsInfo } from "./dnsLookup";
+import { runExtraChecks, checkSecurityHeaders } from "./extraChecks";
 
 // Multiple CORS proxies tried in order until one succeeds.
 // Each entry knows how to build the URL and how to extract the text body.
