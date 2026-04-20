@@ -1,8 +1,10 @@
 import type { AuditResult, Category, Issue } from "./types";
+import { detectTechnologies } from "./detectTech";
 
 // Public CORS proxy that returns raw HTML + headers (works in browser, no backend).
 // allorigins returns JSON with `contents` (HTML) and `status` (HTTP info).
 const PROXY = "https://api.allorigins.win/get?url=";
+const PROXY_RAW = "https://api.allorigins.win/raw?url=";
 
 function normalizeUrl(input: string): string {
   let u = input.trim();
@@ -26,6 +28,22 @@ async function fetchSite(url: string): Promise<{ html: string; status: number; f
     throw new Error(`Site-ul a returnat status ${status || "necunoscut"}`);
   }
   return { html, status, finalUrl, fetchMs, bytes };
+}
+
+async function fetchText(url: string): Promise<{ ok: boolean; text: string }> {
+  try {
+    const res = await fetch(PROXY_RAW + encodeURIComponent(url), { method: "GET" });
+    if (!res.ok) return { ok: false, text: "" };
+    const text = await res.text();
+    // allorigins returns empty body for 404s sometimes; treat tiny / HTML 404 pages as missing
+    if (!text || text.length < 5) return { ok: false, text: "" };
+    if (/^<!doctype html|<html/i.test(text.trim()) && /not found|404/i.test(text)) {
+      return { ok: false, text: "" };
+    }
+    return { ok: true, text };
+  } catch {
+    return { ok: false, text: "" };
+  }
 }
 
 function parseDoc(html: string): Document {
@@ -295,6 +313,52 @@ export async function runAudit(
       recommendation: "Adaugă JSON-LD pentru tipul potrivit (Organization, LocalBusiness, Product, FAQ etc.).",
     });
   }
+
+  // robots.txt + sitemap.xml fetch
+  const origin = new URL(finalUrl).origin;
+  const [robotsRes, sitemapRes] = await Promise.all([
+    fetchText(`${origin}/robots.txt`),
+    fetchText(`${origin}/sitemap.xml`),
+  ]);
+
+  let robotsHasSitemap = false;
+  if (robotsRes.ok && /^user-agent:/im.test(robotsRes.text)) {
+    robotsHasSitemap = /^sitemap:\s*https?:\/\//im.test(robotsRes.text);
+  } else {
+    penalize("infrastructure", 8, {
+      category: "infrastructure",
+      severity: "warning",
+      title: "Lipsește fișierul robots.txt",
+      description: "robots.txt spune motoarelor de căutare ce pot și ce nu pot indexa pe site.",
+      recommendation: "Creează un fișier robots.txt în rădăcina site-ului cu cel puțin User-agent: * și Sitemap: URL.",
+    });
+  }
+
+  let sitemapUrlCount = 0;
+  if (sitemapRes.ok && /<urlset|<sitemapindex/i.test(sitemapRes.text)) {
+    sitemapUrlCount = (sitemapRes.text.match(/<loc>/gi) || []).length;
+  } else {
+    penalize("infrastructure", 10, {
+      category: "infrastructure",
+      severity: "warning",
+      title: "Lipsește sitemap.xml",
+      description: "Sitemap-ul ajută Google să descopere și indexeze toate paginile site-ului mai rapid.",
+      recommendation: "Generează un sitemap.xml (plugin SEO sau manual) și adaugă-l la /sitemap.xml + în robots.txt.",
+    });
+  }
+
+  if (robotsRes.ok && !robotsHasSitemap && sitemapRes.ok) {
+    penalize("infrastructure", 3, {
+      category: "infrastructure",
+      severity: "info",
+      title: "Sitemap nu este declarat în robots.txt",
+      description: "Deși sitemap.xml există, robots.txt nu îl menționează — bots-urii s-ar putea să nu îl găsească.",
+      recommendation: "Adaugă linia: Sitemap: https://domeniul-tau.ro/sitemap.xml în robots.txt.",
+    });
+  }
+
+  // Technology detection
+  const technologies = detectTechnologies(html, doc);
 
   onProgress?.(5, "Analiză UX & accesibilitate...");
 
