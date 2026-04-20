@@ -35,6 +35,20 @@ export interface AuditResult {
     technologies: string[];
     robotsTxt: { found: boolean; hasSitemap: boolean };
     sitemapXml: { found: boolean; urlCount: number };
+    vitals: {
+      lcpScore: number;
+      clsScore: number;
+    };
+    dns: {
+      hasA: boolean;
+      aRecords: string[];
+      hasAAAA: boolean;
+      hasMx: boolean;
+      mxRecords: string[];
+      hasSpf: boolean;
+      hasDmarc: boolean;
+      hasCaa: boolean;
+    } | null;
   };
 }
 
