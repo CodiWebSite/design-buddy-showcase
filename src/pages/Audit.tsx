@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { useState, useEffect } from "react";
 import { ShieldCheck, Zap, Search } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -40,17 +39,32 @@ const Audit = () => {
     setStep(0);
   };
 
+  useEffect(() => {
+    document.title = "Audit Website Gratuit - SEO, Securitate, Performanță | WebCraft";
+    const setMeta = (name: string, content: string) => {
+      let el = document.querySelector(`meta[name="${name}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute("name", name);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    };
+    setMeta(
+      "description",
+      "Analizează gratuit site-ul tău: SEO, securitate, performanță și UX. Primește raport PDF complet cu recomandări de remediere.",
+    );
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute("href", "https://webcraft.djfunkyevents.ro/audit");
+  }, []);
+
   return (
     <>
-      <Helmet>
-        <title>Audit Website Gratuit - SEO, Securitate, Performanță | WebCraft</title>
-        <meta
-          name="description"
-          content="Analizează gratuit site-ul tău: SEO, securitate, performanță și UX. Primește raport PDF complet cu recomandări de remediere."
-        />
-        <link rel="canonical" href="https://webcraft.djfunkyevents.ro/audit" />
-      </Helmet>
-
       <div className="min-h-screen bg-background">
         <Navbar />
 
