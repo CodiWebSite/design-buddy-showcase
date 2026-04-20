@@ -1,5 +1,7 @@
 import type { AuditResult, Category, Issue } from "./types";
 import { detectTechnologies } from "./detectTech";
+import { estimateWebVitals } from "./webVitals";
+import { lookupDns, type DnsInfo } from "./dnsLookup";
 
 // Multiple CORS proxies tried in order until one succeeds.
 // Each entry knows how to build the URL and how to extract the text body.
@@ -504,6 +506,101 @@ export async function runAudit(
     }
   }
 
+  // ---------- WEB VITALS (heuristic, from HTML) ----------
+  const vitals = estimateWebVitals(doc, bytes);
+  if (vitals.flags.heroImageNotPreloaded && vitals.lcpRiskScore < 80) {
+    penalize("performance", 8, {
+      category: "performance",
+      severity: "warning",
+      title: "Imaginea principală (LCP) nu este preîncărcată",
+      description: "Fără <link rel=preload as=image>, browserul descoperă imaginea hero târziu, întârziind LCP.",
+      recommendation: 'Adaugă <link rel="preload" as="image" href="/hero.jpg" fetchpriority="high"> în <head>.',
+    });
+  }
+  if (vitals.flags.blockingScriptsInHead > 2) {
+    penalize("performance", 8, {
+      category: "performance",
+      severity: "warning",
+      title: `${vitals.flags.blockingScriptsInHead} scripturi blochează randarea (în <head>, fără async/defer)`,
+      description: "Scripturile fără async sau defer în <head> opresc randarea paginii până se descarcă și execută.",
+      recommendation: "Adaugă atributul defer (sau async) la tag-urile <script src=...> sau mută-le înainte de </body>.",
+    });
+  }
+  if (vitals.flags.imagesWithoutDimensionsTotal > 3) {
+    penalize("performance", 7, {
+      category: "performance",
+      severity: "warning",
+      title: `${vitals.flags.imagesWithoutDimensionsTotal} imagini fără width/height (risc CLS ridicat)`,
+      description: "Imaginile fără dimensiuni declarate cauzează layout shift când se încarcă — Core Web Vital negativ.",
+      recommendation: "Adaugă atributele width și height pe fiecare <img> (browserul calculează spațiul rezervat).",
+    });
+  }
+  if (vitals.flags.iframesWithoutDimensions > 0) {
+    penalize("performance", 4, {
+      category: "performance",
+      severity: "info",
+      title: `${vitals.flags.iframesWithoutDimensions} iframe fără dimensiuni`,
+      description: "Iframe-urile fără width/height cauzează layout shift la încărcare.",
+      recommendation: "Adaugă atributele width și height pe fiecare <iframe>.",
+    });
+  }
+  if (vitals.flags.fontsWithoutDisplaySwap > 0) {
+    penalize("performance", 4, {
+      category: "performance",
+      severity: "info",
+      title: "Fonturi web fără font-display: swap",
+      description: "Fără swap, textul rămâne invizibil până se descarcă fontul (FOIT) — afectează LCP și CLS.",
+      recommendation: 'Adaugă &display=swap la URL-urile Google Fonts sau font-display: swap în @font-face.',
+    });
+  }
+
+  // ---------- DNS via Cloudflare DoH ----------
+  let dnsInfo: DnsInfo | null = null;
+  try {
+    const hostname = new URL(finalUrl).hostname;
+    dnsInfo = await lookupDns(hostname);
+
+    if (dnsInfo.hasMx && !dnsInfo.hasSpf) {
+      penalize("security", 10, {
+        category: "security",
+        severity: "warning",
+        title: "Domeniul are MX dar lipsește SPF",
+        description:
+          "Fără SPF, oricine poate trimite emailuri în numele domeniului tău — risc major de phishing și spam.",
+        recommendation: 'Adaugă un record TXT: "v=spf1 include:_spf.providerul-tau.com -all".',
+      });
+    }
+    if (dnsInfo.hasMx && !dnsInfo.hasDmarc) {
+      penalize("security", 10, {
+        category: "security",
+        severity: "warning",
+        title: "DMARC lipsește pentru un domeniu cu email",
+        description: "DMARC instruiește serverele de email cum să gestioneze mesaje suspecte trimise în numele tău.",
+        recommendation: 'Adaugă _dmarc.domeniu.ro TXT: "v=DMARC1; p=quarantine; rua=mailto:tine@domeniu.ro".',
+      });
+    }
+    if (!dnsInfo.hasCaa && isHttps) {
+      penalize("security", 3, {
+        category: "security",
+        severity: "info",
+        title: "Lipsesc record-uri CAA",
+        description: "CAA limitează ce autorități de certificare pot emite SSL pentru domeniul tău.",
+        recommendation: 'Adaugă CAA: 0 issue "letsencrypt.org" pentru a restricționa emiterea SSL.',
+      });
+    }
+    if (!dnsInfo.hasAAAA) {
+      penalize("infrastructure", 2, {
+        category: "infrastructure",
+        severity: "info",
+        title: "Domeniul nu are record-uri AAAA (IPv6)",
+        description: "IPv6 e tot mai răspândit; lipsa lui poate încetini accesul pentru unii utilizatori.",
+        recommendation: "Cere providerului de hosting activarea IPv6 și adaugă record AAAA.",
+      });
+    }
+  } catch (e) {
+    console.warn("DNS lookup eșuat:", e);
+  }
+
   // ---------- FINAL ----------
   const finalScores: Record<Category, number> = {
     security: clamp(scores.security),
@@ -548,6 +645,22 @@ export async function runAudit(
       technologies,
       robotsTxt: { found: robotsRes.ok, hasSitemap: robotsHasSitemap },
       sitemapXml: { found: sitemapRes.ok, urlCount: sitemapUrlCount },
+      vitals: {
+        lcpScore: vitals.lcpRiskScore,
+        clsScore: vitals.clsRiskScore,
+      },
+      dns: dnsInfo
+        ? {
+            hasA: dnsInfo.hasA,
+            aRecords: dnsInfo.aRecords,
+            hasAAAA: dnsInfo.hasAAAA,
+            hasMx: dnsInfo.hasMx,
+            mxRecords: dnsInfo.mxRecords,
+            hasSpf: dnsInfo.hasSpf,
+            hasDmarc: dnsInfo.hasDmarc,
+            hasCaa: dnsInfo.hasCaa,
+          }
+        : null,
     },
   };
 }
