@@ -173,6 +173,7 @@ export function generateAuditPdf(result: AuditResult): jsPDF {
   y += 8;
 
   const meta = result.metadata;
+  const techList = meta.technologies.length ? meta.technologies.join(", ") : "Niciuna detectata";
   const rows: [string, string][] = [
     ["Titlu pagina", meta.title || "(lipseste)"],
     ["Meta description", meta.description || "(lipseste)"],
@@ -183,6 +184,9 @@ export function generateAuditPdf(result: AuditResult): jsPDF {
     ["Favicon", meta.favicon ? "Da" : "Nu"],
     ["Imagini totale / fara alt", `${meta.imagesTotal} / ${meta.imagesMissingAlt}`],
     ["Open Graph / Twitter", `${meta.ogTags} / ${meta.twitterTags}`],
+    ["robots.txt", meta.robotsTxt.found ? (meta.robotsTxt.hasSitemap ? "Gasit (cu sitemap)" : "Gasit") : "Lipseste"],
+    ["sitemap.xml", meta.sitemapXml.found ? `Gasit (${meta.sitemapXml.urlCount} URL-uri)` : "Lipseste"],
+    ["Tehnologii detectate", techList],
     ["Timp raspuns", `${result.fetchMs} ms`],
     ["Marime HTML", `${(result.htmlBytes / 1024).toFixed(1)} KB`],
   ];

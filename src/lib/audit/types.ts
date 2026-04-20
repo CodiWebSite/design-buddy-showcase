@@ -32,6 +32,9 @@ export interface AuditResult {
     favicon: boolean;
     isHttps: boolean;
     server: string | null;
+    technologies: string[];
+    robotsTxt: { found: boolean; hasSitemap: boolean };
+    sitemapXml: { found: boolean; urlCount: number };
   };
 }
 
