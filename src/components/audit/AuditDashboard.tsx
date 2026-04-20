@@ -126,6 +126,58 @@ const AuditDashboard = ({ result, onReset }: Props) => {
         </div>
       </div>
 
+      {/* Web Vitals (heuristic) */}
+      <div className="card-premium rounded-xl p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
+            Core Web Vitals (estimat)
+          </h4>
+          <span className="text-xs text-muted-foreground">heuristic, nu Lighthouse real</span>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          {[
+            { key: "LCP", label: "Largest Contentful Paint", score: result.metadata.vitals.lcpScore },
+            { key: "CLS", label: "Cumulative Layout Shift", score: result.metadata.vitals.clsScore },
+          ].map((v) => {
+            const color = v.score >= 80 ? "text-emerald-500" : v.score >= 50 ? "text-amber-500" : "text-destructive";
+            return (
+              <div key={v.key} className="bg-secondary/30 rounded-lg p-4">
+                <div className="flex items-baseline gap-2 mb-1">
+                  <span className={`text-3xl font-bold ${color}`}>{v.score}</span>
+                  <span className="text-sm font-semibold text-foreground">{v.key}</span>
+                </div>
+                <p className="text-xs text-muted-foreground">{v.label}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* DNS records */}
+      {result.metadata.dns && (
+        <div className="card-premium rounded-xl p-5 space-y-3">
+          <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1">
+            DNS & email security (Cloudflare DoH)
+          </h4>
+          {[
+            { label: "Record-uri A (IPv4)", ok: result.metadata.dns.hasA, value: result.metadata.dns.aRecords.slice(0, 2).join(", ") || "—" },
+            { label: "Record-uri AAAA (IPv6)", ok: result.metadata.dns.hasAAAA, value: result.metadata.dns.hasAAAA ? "Da" : "Nu" },
+            { label: "MX (servere email)", ok: result.metadata.dns.hasMx, value: result.metadata.dns.hasMx ? `${result.metadata.dns.mxRecords.length} record(uri)` : "Nu" },
+            { label: "SPF", ok: result.metadata.dns.hasSpf, value: result.metadata.dns.hasSpf ? "Configurat" : "Lipsește" },
+            { label: "DMARC", ok: result.metadata.dns.hasDmarc, value: result.metadata.dns.hasDmarc ? "Configurat" : "Lipsește" },
+            { label: "CAA", ok: result.metadata.dns.hasCaa, value: result.metadata.dns.hasCaa ? "Configurat" : "Lipsește" },
+          ].map((row) => (
+            <div key={row.label} className="flex items-center justify-between text-sm border-b border-border/50 pb-2 last:border-0 last:pb-0">
+              <span className="text-muted-foreground">{row.label}</span>
+              <span className={`font-semibold text-right truncate max-w-[60%] ${row.ok ? "text-emerald-500" : "text-amber-500"}`}>
+                {row.ok ? "✓ " : "— "}
+                {row.value}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* CTA */}
       <div className="rounded-2xl p-8 text-center bg-gradient-to-br from-primary/20 via-primary/10 to-transparent border border-primary/30">
         <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">Vrei să remediem aceste probleme?</h3>
