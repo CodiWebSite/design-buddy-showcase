@@ -1,15 +1,16 @@
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShieldCheck } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import logo from "@/assets/webcraft-logo.png";
 
 const navLinks = [
-  { href: "#portofoliu", label: "Portofoliu" },
-  { href: "#servicii", label: "Servicii" },
-  { href: "#proces", label: "Proces" },
-  { href: "#preturi", label: "Pachete" },
-  { href: "#testimoniale", label: "Testimoniale" },
-  { href: "#faq", label: "FAQ" },
+  { href: "/#portofoliu", label: "Portofoliu" },
+  { href: "/#servicii", label: "Servicii" },
+  { href: "/#proces", label: "Proces" },
+  { href: "/#preturi", label: "Pachete" },
+  { href: "/#testimoniale", label: "Testimoniale" },
+  { href: "/#faq", label: "FAQ" },
 ];
 
 const Navbar = () => {
@@ -37,11 +38,18 @@ const Navbar = () => {
                 {link.label}
               </a>
             ))}
+            <Link
+              to="/audit"
+              className="inline-flex items-center gap-1.5 text-primary hover:text-primary/80 transition-colors duration-200 font-semibold text-sm"
+            >
+              <ShieldCheck size={16} />
+              Audit Gratuit
+            </Link>
           </div>
 
           <div className="hidden lg:block">
             <Button variant="professional" size="lg" asChild>
-              <a href="#contact">Cere ofertă</a>
+              <a href="/#contact">Cere ofertă</a>
             </Button>
           </div>
 
@@ -68,8 +76,16 @@ const Navbar = () => {
                   {link.label}
                 </a>
               ))}
+              <Link
+                to="/audit"
+                onClick={() => setIsOpen(false)}
+                className="inline-flex items-center gap-2 text-primary hover:bg-primary/10 transition-colors duration-200 font-semibold py-3 px-3 rounded-lg"
+              >
+                <ShieldCheck size={16} />
+                Audit Gratuit
+              </Link>
               <Button variant="professional" size="lg" className="mt-3" asChild>
-                <a href="#contact" onClick={() => setIsOpen(false)}>
+                <a href="/#contact" onClick={() => setIsOpen(false)}>
                   Cere ofertă
                 </a>
               </Button>
