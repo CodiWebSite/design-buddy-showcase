@@ -70,12 +70,15 @@ const HostingSection = () => {
             />
           </a>
 
-          <div>
-            <Button variant="professional" size="lg" asChild>
-              <a href="https://www.cloud-center.ro/aff.php?aff=793" target="_blank" rel="noopener noreferrer">
-                Accesează Cloud-Center.ro
-              </a>
-            </Button>
+          <div className="relative z-20">
+            <a
+              href="https://www.cloud-center.ro/aff.php?aff=793"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-md text-base font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-md transition-all duration-200"
+            >
+              Accesează Cloud-Center.ro
+            </a>
           </div>
         </div>
       </div>
