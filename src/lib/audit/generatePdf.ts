@@ -431,5 +431,76 @@ export function generateAuditPdf(result: AuditResult): jsPDF {
   pdf.setFont("helvetica", "normal");
   pdf.text("webcraft.djfunkyevents.ro", W / 2, 160, { align: "center" });
 
+  // ===== FILL TOC PAGE =====
+  pdf.setPage(tocPageNum);
+  // Light background
+  pdf.setFillColor(255, 255, 255);
+  pdf.rect(0, 0, W, H, "F");
+  // Page header bar
+  pdf.setFillColor(248, 250, 252);
+  pdf.rect(0, 0, W, 14, "F");
+  pdf.setTextColor(100, 116, 139);
+  pdf.setFontSize(9);
+  pdf.setFont("helvetica", "normal");
+  pdf.text("WebCraft Audit", 20, 9);
+  pdf.text(clean(result.url), W - 20, 9, { align: "right" });
+  pdf.setDrawColor(226, 232, 240);
+  pdf.line(0, 14, W, 14);
+
+  // Title
+  pdf.setTextColor(15, 23, 42);
+  pdf.setFontSize(24);
+  pdf.setFont("helvetica", "bold");
+  pdf.text("Cuprins", 20, 35);
+  pdf.setFontSize(10);
+  pdf.setFont("helvetica", "normal");
+  pdf.setTextColor(100, 116, 139);
+  pdf.text(clean("Apasa pe oricare sectiune pentru a naviga direct."), 20, 43);
+
+  // Entries
+  let tocY = 58;
+  pdf.setFontSize(11);
+  for (let i = 0; i < tocEntries.length; i++) {
+    const entry = tocEntries[i];
+    if (tocY > H - 25) break; // single page TOC
+
+    // Row background (zebra)
+    if (i % 2 === 0) {
+      pdf.setFillColor(248, 250, 252);
+      pdf.rect(18, tocY - 5, W - 36, 8, "F");
+    }
+
+    pdf.setTextColor(15, 23, 42);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(10);
+    pdf.text(`${String(i + 1).padStart(2, "0")}.`, 22, tocY);
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(11);
+    const labelClean = clean(entry.label);
+    pdf.text(labelClean, 32, tocY, { maxWidth: W - 80 });
+
+    // Dotted leader + page number
+    pdf.setTextColor(100, 116, 139);
+    pdf.setFontSize(10);
+    const pageStr = `pag. ${entry.page}`;
+    pdf.text(pageStr, W - 22, tocY, { align: "right" });
+
+    // Clickable link region (covers full row)
+    pdf.link(18, tocY - 5, W - 36, 9, { pageNumber: entry.page });
+
+    tocY += 9;
+  }
+
+  // Footer
+  pdf.setTextColor(148, 163, 184);
+  pdf.setFontSize(9);
+  pdf.setFont("helvetica", "italic");
+  pdf.text(
+    clean(`${tocEntries.length} sectiuni - Generat ${new Date(result.fetchedAt).toLocaleDateString("ro-RO")}`),
+    20,
+    H - 15,
+  );
+
   return pdf;
 }
