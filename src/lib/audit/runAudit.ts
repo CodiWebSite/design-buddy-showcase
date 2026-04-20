@@ -606,6 +606,50 @@ export async function runAudit(
     console.warn("DNS lookup eșuat:", e);
   }
 
+  // ---------- EXTRA CHECKS (accessibility, privacy, modern web, SRI, etc.) ----------
+  const extra = runExtraChecks(doc, html, isHttps);
+  for (const issue of extra.issues) {
+    // Use small penalties; many are info-level
+    const points = issue.severity === "critical" ? 15 : issue.severity === "warning" ? 6 : 2;
+    scores[issue.category] -= points;
+    issues.push(issue);
+  }
+
+  // ---------- SECURITY HEADERS (only if proxy preserved them) ----------
+  const headerCheck = checkSecurityHeaders(headers, isHttps);
+  for (const issue of headerCheck.issues) {
+    const points = issue.severity === "warning" ? 5 : 2;
+    scores[issue.category] -= points;
+    issues.push(issue);
+  }
+
+  // ---------- security.txt + llms.txt ----------
+  const [securityTxtRes, llmsTxtRes] = await Promise.all([
+    fetchText(`${origin}/.well-known/security.txt`),
+    fetchText(`${origin}/llms.txt`),
+  ]);
+  const securityTxt = securityTxtRes.ok && /contact:/i.test(securityTxtRes.text);
+  const llmsTxt = llmsTxtRes.ok && llmsTxtRes.text.length > 10;
+
+  if (!securityTxt) {
+    penalize("security", 2, {
+      category: "security",
+      severity: "info",
+      title: "Lipsește fișierul security.txt (RFC 9116)",
+      description: "security.txt oferă cercetătorilor de securitate un canal standardizat pentru a raporta vulnerabilități.",
+      recommendation: "Creează /.well-known/security.txt cu cel puțin: Contact: mailto:security@domeniul-tau.ro",
+    });
+  }
+  if (!llmsTxt) {
+    penalize("seo", 1, {
+      category: "seo",
+      severity: "info",
+      title: "Lipsește fișierul llms.txt pentru crawlerele AI",
+      description: "llms.txt e un standard emergent pentru a oferi contextul site-ului către modelele LLM (ChatGPT, Claude, Perplexity).",
+      recommendation: "Creează /llms.txt cu un sumar markdown al site-ului și link-uri către pagini-cheie.",
+    });
+  }
+
   // ---------- FINAL ----------
   const finalScores: Record<Category, number> = {
     security: clamp(scores.security),
@@ -646,7 +690,7 @@ export async function runAudit(
       viewport,
       favicon,
       isHttps,
-      server: null,
+      server: headerCheck.server,
       technologies,
       robotsTxt: { found: robotsRes.ok, hasSitemap: robotsHasSitemap },
       sitemapXml: { found: sitemapRes.ok, urlCount: sitemapUrlCount },
@@ -666,6 +710,30 @@ export async function runAudit(
             hasCaa: dnsInfo.hasCaa,
           }
         : null,
+      privacy: extra.privacy,
+      accessibility: {
+        linksWithoutText: extra.accessibility.linksWithoutText,
+        buttonsWithoutText: extra.accessibility.buttonsWithoutText,
+        inputsWithoutLabel: extra.accessibility.inputsWithoutLabel,
+        iframesWithoutTitle: extra.accessibility.iframesWithoutTitle,
+        headingSkipsCount: extra.accessibility.headingSkips.length,
+        viewportBlocksZoom: extra.accessibility.viewportBlocksZoom,
+        skipLink: extra.accessibility.skipLink,
+      },
+      modernWeb: extra.modernWeb,
+      securityHeaders: {
+        available: headerCheck.headersAvailable,
+        hsts: headerCheck.hsts,
+        csp: headerCheck.csp,
+        xFrameOptions: headerCheck.xFrameOptions,
+        xContentTypeOptions: headerCheck.xContentTypeOptions,
+        referrerPolicy: headerCheck.referrerPolicy,
+        permissionsPolicy: headerCheck.permissionsPolicy,
+        poweredBy: headerCheck.poweredBy,
+        server: headerCheck.server,
+      },
+      securityTxt,
+      llmsTxt,
     },
   };
 }
