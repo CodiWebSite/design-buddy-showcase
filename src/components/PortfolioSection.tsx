@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 
-const screenshot = (url: string, wait = 3) =>
-  `https://image.thum.io/get/width/1280/crop/800/wait/${wait}/noanimate/${url}`;
+const screenshot = (url: string, wait = 3, viewport = 1280) =>
+  `https://image.thum.io/get/width/1280/crop/800/viewportWidth/${viewport}/wait/${wait}/noanimate/png/${url}`;
 
 const portfolioItems = [
   {
@@ -34,7 +34,7 @@ const portfolioItems = [
     solution:
       "Design imersiv, animații rafinate și o prezentare artistică memorabilă.",
     url: "https://dj-cozo.ro/",
-    image: screenshot("https://dj-cozo.ro/", 8),
+    image: screenshot("https://dj-cozo.ro/", 15, 1440),
     tags: ["Design Premium", "Animații", "Brand"],
   },
   {
