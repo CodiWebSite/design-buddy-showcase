@@ -460,6 +460,9 @@ export async function runAudit(
       favicon,
       isHttps,
       server: null,
+      technologies,
+      robotsTxt: { found: robotsRes.ok, hasSitemap: robotsHasSitemap },
+      sitemapXml: { found: sitemapRes.ok, urlCount: sitemapUrlCount },
     },
   };
 }
