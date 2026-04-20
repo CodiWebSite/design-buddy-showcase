@@ -25,6 +25,14 @@ const portfolioItems = [
     image: `https://api.microlink.io/?url=https://dj-cozo.ro/&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1280&viewport.height=800`,
     tags: ["Portfolio", "Animații", "Design Premium"],
   },
+  {
+    title: "Radio DJ Funky Events",
+    category: "Radio Online",
+    description: "Platformă radio online live pentru DJ Funky Events cu streaming audio și interfață modernă.",
+    url: "https://radio.djfunkyevents.ro/",
+    image: `https://api.microlink.io/?url=https://radio.djfunkyevents.ro/&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1280&viewport.height=800`,
+    tags: ["Radio Live", "Streaming", "Audio"],
+  },
 ];
 
 const PortfolioSection = () => {
