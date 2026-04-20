@@ -340,6 +340,7 @@ export function generateAuditPdf(result: AuditResult): jsPDF {
       const sevColor = SEVERITY_COLOR[g.key];
 
       ensureSpace(22);
+      markSection(`${g.label} (${g.items.length})`);
       // Header de grupa
       pdf.setFillColor(...sevColor);
       pdf.roundedRect(20, y, 4, 10, 1, 1, "F");
