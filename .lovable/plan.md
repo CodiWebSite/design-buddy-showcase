@@ -1,121 +1,75 @@
 
 
-# WebCraft Audit - Tool de analiză website
+# Plan îmbunătățiri WebCraft (fără Lovable Cloud)
 
-Construim un tool public de audit website (similar softaudit.ro) la `/audit`, cu link shareable, scor combinat (heuristici + Google PageSpeed) și PDF brandat (copertă dark + conținut light).
+Toate adăugirile sunt 100% client-side — fără backend, DB sau edge functions. Datele sunt statice (în cod) sau salvate în `localStorage`.
 
-## Ce primește utilizatorul
+## 1. Cookie consent banner GDPR
+- Componentă nouă `src/components/CookieBanner.tsx` cu accept/reject + link spre Politica de confidențialitate
+- Salvează alegerea în `localStorage` (`cookie-consent: accepted|rejected`)
+- Apare doar dacă nu există alegere salvată
+- Mount în `App.tsx` (vizibil pe toate paginile)
 
-1. **Pagina `/audit`** — input URL + buton "Analizează gratuit"
-2. **Loader animat** cu pași live (Securitate → SEO → Performanță → Infrastructură → UX)
-3. **Dashboard rezultate** — scor general 0-100, grade A-F per categorie, listă issues cu explicații + recomandări
-4. **Buton "Audit aprofundat"** — rulează Google PageSpeed Insights pentru scor Lighthouse real
-5. **Buton "Descarcă PDF"** — raport complet brandat
-6. **Link shareable** — `/audit/raport/{slug}` pe care îl trimiți clienților
-7. **CTA contextual** — "Vrei să remediem aceste probleme? Cere ofertă" (link spre #contact)
+## 2. Blog static (MDX-free, date în cod)
+- Rută nouă `/blog` — listă articole cu card + filtrare pe categorie
+- Rută nouă `/blog/:slug` — articol individual cu typography Tailwind prose
+- Date în `src/data/blogPosts.ts` (titlu, slug, excerpt, content markdown, categorie, dată, autor, imagine)
+- 3 articole exemplu: "Cât costă un site de prezentare în 2026", "WordPress vs site custom: ce alegi", "10 greșeli SEO frecvente"
+- Render markdown cu `react-markdown` (deja compatibil)
+- Link "Blog" în Navbar + secțiune "Articole recente" pe homepage (opțional)
 
-## Categorii analizate
+## 3. Studii de caz portofoliu
+- Rută nouă `/portofoliu/:slug`
+- Extindere `portfolioItems` în `PortfolioSection.tsx` cu: provocare detaliată, soluție pas cu pas, rezultate (metrici), tehnologii, durată, testimonial client
+- Card-urile actuale devin clickable → pagină detaliu
+- CTA "Vrei ceva similar?" pe fiecare studiu
 
-| Categorie | Verificări |
-|-----------|------------|
-| **Securitate** | HTTPS/SSL valid, certificat expirare, HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, mixed content |
-| **SEO** | Title (lungime), meta description, H1 unic, structură headings, canonical, robots.txt, sitemap.xml, Open Graph, Twitter Cards, lang attribute, alt text imagini |
-| **Performanță** | TTFB, mărime HTML, compresie (gzip/br), cache headers, număr requesturi, scor Lighthouse (opțional) |
-| **Infrastructură** | DNS records (A, MX, TXT, SPF, DMARC), server headers, tehnologie detectată, IP/hosting |
-| **UX/Accesibilitate** | Viewport meta, favicon, lang, alt text rate, font-size mobil, touch targets |
+## 4. Calculator preț instant
+- Componentă nouă `src/components/PriceCalculator.tsx` plasată într-o secțiune pe homepage (între Pricing și Process)
+- Selectoare: tip site (prezentare/magazin/custom), nr. pagini (slider), opțiuni (multilingv +X RON, blog +X, rezervări +X, SEO start +X)
+- Calculează estimare RON live + breakdown
+- CTA "Cere ofertă fermă cu această configurație" → `#contact` cu detaliile pre-completate via query string sau context
 
-## Plan tehnic
+## 5. Schema.org structured data
+- JSON-LD injectat în `index.html` sau via `useEffect` în `Index.tsx`:
+  - `LocalBusiness` (nume, telefon, email, locație, ore)
+  - `Service` (servicii oferite cu prețuri)
+  - `FAQPage` (din `FAQSection`)
+  - `BreadcrumbList` pe paginile interne
 
-### Backend (Lovable Cloud)
+## 6. Pagina "Despre"
+- Rută nouă `/despre`
+- Conținut: misiune, valori, experiență, proces de lucru, foto/avatar
+- Link în Navbar și Footer
 
-**Activare Lovable Cloud** (necesar pentru DB + edge functions + storage PDF).
+## 7. Optimizări tehnice
+- `og:image` custom în `index.html` (folosim un asset existent sau generăm unul)
+- Lazy loading explicit pe imagini portofoliu (`loading="lazy"`)
+- `sitemap.xml` static în `public/` cu toate rutele noi
+- `robots.txt` actualizat
 
-**Tabel `audits`**:
-```
-id uuid pk
-slug text unique          -- pentru /audit/raport/{slug}
-url text
-overall_score int         -- 0-100
-category_scores jsonb     -- { security: 85, seo: 70, ... }
-issues jsonb              -- array of { category, severity, title, description, recommendation }
-metadata jsonb            -- title, description, ip, server, tech detected
-lighthouse_data jsonb     -- nullable, populat la "audit aprofundat"
-created_at timestamp
-ip_address text           -- pentru rate limiting
-```
+## Ordine recomandată de implementare
+1. **Cookie banner** (rapid, legal obligatoriu)
+2. **Schema.org + optimizări tehnice** (SEO instant, fără UI nou)
+3. **Pagina Despre** (simplu, încredere)
+4. **Blog + 3 articole** (volum mai mare, dar mare impact SEO)
+5. **Studii de caz portofoliu** (conversie)
+6. **Calculator preț** (lead gen)
 
-RLS: SELECT public (oricine poate citi cu slug), INSERT prin edge function (cu service role).
+## Detalii tehnice
 
-**Tabel `audit_rate_limits`**:
-```
-ip_address text
-audit_count int
-window_start timestamp
-```
-Limit: 5 audituri/oră per IP.
+- **Routing**: toate rutele noi adăugate în `src/App.tsx` (deja folosește `react-router-dom`)
+- **Markdown**: instalare `react-markdown` + `remark-gfm` pentru blog
+- **State global**: niciunul necesar — totul prop-drilling sau `localStorage` pentru cookie
+- **Stilistică**: refolosim `card-premium`, gradient-urile și paleta dark existentă din `index.css` și `tailwind.config.ts`
+- **Navbar**: adăugăm linkuri "Blog" și "Despre" (poate într-un dropdown "Mai multe" pe desktop pentru a nu aglomera)
+- **Footer**: linkuri către Blog, Despre, Studii de caz
 
-**Edge Function `audit-website`**:
-- Input: `{ url }`
-- Validare URL cu Zod
-- Check rate limit
-- `fetch()` HTML + headers
-- Parse cu regex/DOMParser pentru SEO
-- Verifică SSL via `fetch` HEAD
-- DNS lookup (opțional, prin Cloudflare DNS-over-HTTPS)
-- Scoring algorithm (greutăți per categorie)
-- Generează slug unic
-- Insert în DB
-- Return raport complet
+## Ce NU includem (necesită Lovable Cloud)
+- Salvare audituri în DB + link shareable persistent
+- Newsletter cu salvare email-uri
+- Comentarii pe blog
+- Form contact cu trimitere reală pe email (rămâne pe toast + WhatsApp link)
 
-**Edge Function `audit-pagespeed`**:
-- Input: `{ audit_id, url }`
-- Apelează Google PageSpeed Insights API (gratis, fără key pentru < 25k/zi)
-- Update `lighthouse_data` în DB
-- Recalculează scoruri
-
-**Edge Function `generate-audit-pdf`**:
-- Input: `{ slug }`
-- Folosește `pdf-lib` (Deno-compatible)
-- Pagina 1: copertă dark (#0F172A) cu logo, URL, scor mare, data
-- Paginile 2-N: light theme cu issues, recomandări, scoruri per categorie
-- Return PDF blob
-
-### Frontend
-
-**Rute noi**:
-- `/audit` — formular + loader + dashboard live
-- `/audit/raport/:slug` — raport persistent shareable
-
-**Componente noi** în `src/components/audit/`:
-- `AuditForm.tsx` — input URL + validare
-- `AuditLoader.tsx` — animație multi-step cu progres
-- `AuditDashboard.tsx` — scor circular general + grid categorii
-- `CategoryCard.tsx` — grade A-F + listă issues expandabile
-- `IssueItem.tsx` — severitate (critical/warning/info) + recomandare
-- `AuditCTA.tsx` — "Cere ofertă pentru remediere"
-
-**Update Navbar**: adăugăm link "Audit Gratuit" în meniu.
-
-### Stilistică
-
-- Dashboard match cu site-ul (dark theme, accente albastre, carduri `card-premium`)
-- Scoruri vizuale: circular progress, culori semantic (verde 80-100, galben 50-79, roșu <50)
-- Loader: pași secvențiali cu check icons + skeleton
-
-## Limitări conștiente
-
-- **CORS**: nu putem face audit din browser direct → tot prin edge function (OK)
-- **Lighthouse real**: PageSpeed API ia 15-30s → opțional, separat de auditul rapid
-- **Rate limit**: 5/oră per IP previne abuz, dar utilizatori în spatele NAT (operator mobile) pot fi afectați
-
-## Pași de implementare
-
-1. Activare Lovable Cloud + creare tabele + RLS
-2. Edge function `audit-website` (heuristici complete)
-3. Pagina `/audit` cu form + loader + dashboard
-4. Pagina `/audit/raport/:slug` (shareable)
-5. Edge function `audit-pagespeed` + buton "Audit aprofundat"
-6. Edge function `generate-audit-pdf` + buton download
-7. Link în Navbar + CTA către contact
-8. Rate limiting + testare
+Spune-mi de unde să încep — pot face toate cele 7 secvențial, sau alegi un subset.
 
