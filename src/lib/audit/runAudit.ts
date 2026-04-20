@@ -1,49 +1,111 @@
 import type { AuditResult, Category, Issue } from "./types";
 import { detectTechnologies } from "./detectTech";
 
-// Public CORS proxy that returns raw HTML + headers (works in browser, no backend).
-// allorigins returns JSON with `contents` (HTML) and `status` (HTTP info).
-const PROXY = "https://api.allorigins.win/get?url=";
-const PROXY_RAW = "https://api.allorigins.win/raw?url=";
+// Multiple CORS proxies tried in order until one succeeds.
+// Each entry knows how to build the URL and how to extract the text body.
+type ProxyAdapter = {
+  name: string;
+  build: (target: string) => string;
+  parse: (res: Response) => Promise<string>;
+};
+
+const PROXIES: ProxyAdapter[] = [
+  {
+    name: "corsproxy.io",
+    build: (t) => `https://corsproxy.io/?${encodeURIComponent(t)}`,
+    parse: (r) => r.text(),
+  },
+  {
+    name: "codetabs",
+    build: (t) => `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(t)}`,
+    parse: (r) => r.text(),
+  },
+  {
+    name: "allorigins-raw",
+    build: (t) => `https://api.allorigins.win/raw?url=${encodeURIComponent(t)}`,
+    parse: (r) => r.text(),
+  },
+  {
+    name: "allorigins-get",
+    build: (t) => `https://api.allorigins.win/get?url=${encodeURIComponent(t)}`,
+    parse: async (r) => {
+      const data = await r.json();
+      return typeof data?.contents === "string" ? data.contents : "";
+    },
+  },
+  {
+    name: "thingproxy",
+    build: (t) => `https://thingproxy.freeboard.io/fetch/${t}`,
+    parse: (r) => r.text(),
+  },
+];
 
 function normalizeUrl(input: string): string {
   let u = input.trim();
   if (!/^https?:\/\//i.test(u)) u = "https://" + u;
-  // Validate
   const parsed = new URL(u);
   return parsed.toString();
 }
 
-async function fetchSite(url: string): Promise<{ html: string; status: number; finalUrl: string; fetchMs: number; bytes: number }> {
-  const start = performance.now();
-  const res = await fetch(PROXY + encodeURIComponent(url), { method: "GET" });
-  if (!res.ok) throw new Error(`Proxy a returnat ${res.status}`);
-  const data = await res.json();
-  const fetchMs = Math.round(performance.now() - start);
-  const html: string = data.contents || "";
-  const bytes = new Blob([html]).size;
-  const status = data.status?.http_code ?? 0;
-  const finalUrl = data.status?.url ?? url;
-  if (status === 0 || status >= 400) {
-    throw new Error(`Site-ul a returnat status ${status || "necunoscut"}`);
+async function fetchWithTimeout(url: string, ms = 12000): Promise<Response> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  try {
+    return await fetch(url, { signal: ctrl.signal, redirect: "follow" });
+  } finally {
+    clearTimeout(timer);
   }
-  return { html, status, finalUrl, fetchMs, bytes };
+}
+
+/** Try each proxy in turn; return the first non-empty body that looks valid. */
+async function fetchViaProxies(target: string, opts?: { allowEmpty?: boolean }): Promise<{ body: string; proxy: string } | null> {
+  const errors: string[] = [];
+  for (const p of PROXIES) {
+    try {
+      const res = await fetchWithTimeout(p.build(target));
+      if (!res.ok) {
+        errors.push(`${p.name}: HTTP ${res.status}`);
+        continue;
+      }
+      const body = await p.parse(res);
+      if (!opts?.allowEmpty && (!body || body.length < 50)) {
+        errors.push(`${p.name}: gol`);
+        continue;
+      }
+      return { body: body || "", proxy: p.name };
+    } catch (e) {
+      errors.push(`${p.name}: ${(e as Error).message}`);
+    }
+  }
+  console.warn("Toate proxy-urile au eșuat pentru", target, errors);
+  return null;
+}
+
+async function fetchSite(url: string): Promise<{ html: string; finalUrl: string; fetchMs: number; bytes: number; proxy: string }> {
+  const start = performance.now();
+  const result = await fetchViaProxies(url);
+  const fetchMs = Math.round(performance.now() - start);
+  if (!result) {
+    throw new Error("Nu am reușit să accesez site-ul. Toate proxy-urile CORS au eșuat. Verifică URL-ul sau încearcă din nou peste câteva minute.");
+  }
+  const html = result.body;
+  const bytes = new Blob([html]).size;
+  if (!/<html|<!doctype/i.test(html)) {
+    throw new Error("Răspunsul primit nu pare a fi HTML. Site-ul ar putea bloca proxy-urile sau cere autentificare.");
+  }
+  return { html, finalUrl: url, fetchMs, bytes, proxy: result.proxy };
 }
 
 async function fetchText(url: string): Promise<{ ok: boolean; text: string }> {
-  try {
-    const res = await fetch(PROXY_RAW + encodeURIComponent(url), { method: "GET" });
-    if (!res.ok) return { ok: false, text: "" };
-    const text = await res.text();
-    // allorigins returns empty body for 404s sometimes; treat tiny / HTML 404 pages as missing
-    if (!text || text.length < 5) return { ok: false, text: "" };
-    if (/^<!doctype html|<html/i.test(text.trim()) && /not found|404/i.test(text)) {
-      return { ok: false, text: "" };
-    }
-    return { ok: true, text };
-  } catch {
+  const result = await fetchViaProxies(url, { allowEmpty: true });
+  if (!result) return { ok: false, text: "" };
+  const text = result.body;
+  if (!text || text.length < 5) return { ok: false, text: "" };
+  // Detect HTML 404 pages returned instead of the real file
+  if (/^<!doctype html|<html/i.test(text.trim()) && /not found|404/i.test(text)) {
     return { ok: false, text: "" };
   }
+  return { ok: true, text };
 }
 
 function parseDoc(html: string): Document {
