@@ -37,7 +37,7 @@ const Footer = () => {
           <div>
             <h4 className="font-display font-semibold text-foreground mb-4">Link-uri Rapide</h4>
             <ul className="space-y-3">
-              {["Acasă", "Portofoliu", "Servicii", "Prețuri", "Contact"].map((link) => (
+              {["Acasă", "Portofoliu", "Servicii", "Hosting", "Prețuri", "Contact"].map((link) => (
                 <li key={link}>
                   <a
                     href={`#${link.toLowerCase().replace("ț", "t")}`}

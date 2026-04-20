@@ -1,112 +1,109 @@
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, ArrowUpRight } from "lucide-react";
 
 const portfolioItems = [
   {
-    title: "E-Commerce Fashion",
-    category: "Magazin Online",
-    description: "Platformă modernă de e-commerce pentru brand de modă",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop",
-    tags: ["React", "Stripe", "SEO"],
+    title: "DJ Funky Events",
+    category: "Site Evenimente & Booking",
+    description: "Platformă premium pentru DJ profesionist cu sistem de rezervări, galerie și radio live integrat.",
+    url: "https://djfunkyevents.ro/",
+    image: `https://api.microlink.io/?url=https://djfunkyevents.ro/&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1280&viewport.height=800`,
+    tags: ["Booking", "Galerie", "Radio Live"],
   },
   {
-    title: "Restaurant Gourmet",
-    category: "Site Prezentare",
-    description: "Design elegant pentru restaurant premium",
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&h=600&fit=crop",
-    tags: ["WordPress", "Rezervări", "Mobile"],
+    title: "InstalPro Pașcani",
+    category: "Magazin Online & Servicii",
+    description: "Magazin online complet pentru servicii casnice și industriale: climatizare, centrale, scule profesionale.",
+    url: "https://instalpropascani.ro/",
+    image: `https://api.microlink.io/?url=https://instalpropascani.ro/&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1280&viewport.height=800`,
+    tags: ["E-Commerce", "Catalog", "Servicii"],
   },
   {
-    title: "Studio Arhitectură",
-    category: "Portofoliu",
-    description: "Showcase creativ pentru proiecte de arhitectură",
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=600&fit=crop",
-    tags: ["Gallery", "Animații", "3D"],
-  },
-  {
-    title: "Clinică Medicală",
-    category: "Site Corporate",
-    description: "Platformă profesională cu sistem de programări",
-    image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&h=600&fit=crop",
-    tags: ["Programări", "Blog", "GDPR"],
-  },
-  {
-    title: "Agenție Marketing",
-    category: "Landing Page",
-    description: "Site de conversie optimizat pentru leads",
-    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop",
-    tags: ["CRO", "Analytics", "A/B Test"],
-  },
-  {
-    title: "Startup Tech",
-    category: "SaaS Platform",
-    description: "Dashboard modern pentru aplicație cloud",
-    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&h=600&fit=crop",
-    tags: ["Dashboard", "API", "Dark Mode"],
+    title: "DJ Cozo",
+    category: "Portfolio Artistic",
+    description: "Site personal pentru DJ Cozo cu design imersiv, animații premium și prezentare artistică.",
+    url: "https://dj-cozo.ro/",
+    image: `https://api.microlink.io/?url=https://dj-cozo.ro/&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1280&viewport.height=800`,
+    tags: ["Portfolio", "Animații", "Design Premium"],
   },
 ];
 
 const PortfolioSection = () => {
   return (
-    <section id="portofoliu" className="py-20 lg:py-28 relative bg-background">
+    <section id="portofoliu" className="py-24 lg:py-32 relative bg-background overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-1/2 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -translate-y-1/2" />
+      
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-14">
-          <span className="text-primary font-semibold text-sm uppercase tracking-widest">Portofoliu</span>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mt-4 mb-6">
-            Proiecte Realizate
+        <div className="text-center mb-16 max-w-3xl mx-auto">
+          <span className="inline-block px-4 py-1.5 rounded-full glass text-primary font-semibold text-xs uppercase tracking-widest mb-5">
+            Portofoliu
+          </span>
+          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mt-4 mb-6">
+            Proiecte <span className="text-gradient">Realizate</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-            Fiecare proiect este unic și creat cu atenție la detalii pentru a răspunde 
-            nevoilor specifice ale fiecărui client.
+          <p className="text-muted-foreground text-lg leading-relaxed">
+            Site-uri reale, livrate clienților reali. Fiecare proiect este construit cu atenție 
+            la detalii și optimizat pentru rezultate.
           </p>
         </div>
 
         {/* Portfolio Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {portfolioItems.map((item, index) => (
-            <div
+            <a
               key={index}
-              className="group card-professional rounded-xl overflow-hidden hover-lift cursor-pointer"
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group card-premium glow-border rounded-2xl overflow-hidden hover-lift block"
             >
               {/* Image */}
-              <div className="relative h-48 lg:h-52 overflow-hidden">
+              <div className="relative h-56 overflow-hidden bg-muted">
                 <img
                   src={item.image}
-                  alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  alt={`Screenshot ${item.title}`}
+                  loading="lazy"
+                  className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent opacity-60" />
                 
-                {/* Overlay Icon */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-primary/20">
-                  <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
-                    <ExternalLink className="w-5 h-5 text-primary-foreground" />
-                  </div>
+                {/* External link badge */}
+                <div className="absolute top-4 right-4 w-10 h-10 rounded-full glass flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110">
+                  <ArrowUpRight className="w-5 h-5 text-primary" />
                 </div>
               </div>
 
               {/* Content */}
-              <div className="p-6">
-                <span className="text-primary text-sm font-semibold">{item.category}</span>
-                <h3 className="font-display text-xl font-semibold mt-2 mb-3 text-foreground group-hover:text-primary transition-colors">
+              <div className="p-6 lg:p-7">
+                <span className="text-primary text-xs font-semibold uppercase tracking-wider">{item.category}</span>
+                <h3 className="font-display text-xl lg:text-2xl font-bold mt-2 mb-3 text-foreground group-hover:text-gradient transition-all">
                   {item.title}
                 </h3>
-                <p className="text-muted-foreground text-sm mb-4">{item.description}</p>
+                <p className="text-muted-foreground text-sm mb-5 leading-relaxed">{item.description}</p>
                 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2">
                   {item.tags.map((tag, tagIndex) => (
                     <span
                       key={tagIndex}
-                      className="px-3 py-1 text-xs rounded-md bg-secondary text-muted-foreground font-medium"
+                      className="px-3 py-1 text-xs rounded-full bg-secondary/60 text-muted-foreground font-medium border border-border"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
               </div>
-            </div>
+            </a>
           ))}
+        </div>
+
+        {/* CTA */}
+        <div className="text-center mt-14">
+          <p className="text-muted-foreground mb-2">Mai multe proiecte se adaugă în curând</p>
+          <a href="#contact" className="inline-flex items-center gap-2 text-primary hover:text-primary-glow font-semibold transition-colors">
+            Vrei să fii următorul? <ArrowUpRight className="w-4 h-4" />
+          </a>
         </div>
       </div>
     </section>
