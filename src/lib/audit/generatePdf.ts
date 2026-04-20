@@ -189,7 +189,20 @@ export function generateAuditPdf(result: AuditResult): jsPDF {
     ["Tehnologii detectate", techList],
     ["Timp raspuns", `${result.fetchMs} ms`],
     ["Marime HTML", `${(result.htmlBytes / 1024).toFixed(1)} KB`],
+    ["LCP risk score (estimat)", `${meta.vitals.lcpScore}/100`],
+    ["CLS risk score (estimat)", `${meta.vitals.clsScore}/100`],
   ];
+
+  if (meta.dns) {
+    rows.push(
+      ["DNS A records", meta.dns.hasA ? meta.dns.aRecords.slice(0, 2).join(", ") : "Lipseste"],
+      ["DNS AAAA (IPv6)", meta.dns.hasAAAA ? "Da" : "Nu"],
+      ["MX (email servers)", meta.dns.hasMx ? `Da (${meta.dns.mxRecords.length})` : "Nu"],
+      ["SPF record", meta.dns.hasSpf ? "Configurat" : "Lipseste"],
+      ["DMARC record", meta.dns.hasDmarc ? "Configurat" : "Lipseste"],
+      ["CAA record", meta.dns.hasCaa ? "Configurat" : "Lipseste"],
+    );
+  }
 
   pdf.setFontSize(10);
   pdf.setFont("helvetica", "normal");
