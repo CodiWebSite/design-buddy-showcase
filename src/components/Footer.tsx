@@ -1,4 +1,5 @@
 import { Mail, Phone, MessageCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 import logo from "@/assets/webcraft-logo.png";
 
 const quickLinks = [
@@ -102,18 +103,18 @@ const Footer = () => {
             © 2026 WebCraft. Toate drepturile rezervate.
           </p>
           <div className="flex gap-6 text-sm">
-            <a
-              href="#contact"
+            <Link
+              to="/termeni-si-conditii"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               Termeni & Condiții
-            </a>
-            <a
-              href="#contact"
+            </Link>
+            <Link
+              to="/politica-de-confidentialitate"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               Politica de Confidențialitate
-            </a>
+            </Link>
           </div>
         </div>
       </div>
