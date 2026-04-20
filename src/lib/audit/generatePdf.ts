@@ -97,7 +97,11 @@ export function generateAuditPdf(result: AuditResult): jsPDF {
   pdf.setFontSize(9);
   pdf.text("Audit gratuit oferit de WebCraft", W - 20, H - 22, { align: "right" });
 
-  // ===== PAGE 2+: LIGHT =====
+  // ===== TOC PLACEHOLDER (page 2) — filled in at the end =====
+  pdf.addPage();
+  const tocPageNum = pdf.getCurrentPageInfo().pageNumber;
+
+  // ===== PAGE 3+: LIGHT CONTENT =====
   pdf.addPage();
   let y = 20;
 
@@ -119,6 +123,12 @@ export function generateAuditPdf(result: AuditResult): jsPDF {
       writePageHeader();
       y = 22;
     }
+  };
+
+  // Track section anchors for TOC
+  const tocEntries: { label: string; page: number; y: number }[] = [];
+  const markSection = (label: string) => {
+    tocEntries.push({ label, page: pdf.getCurrentPageInfo().pageNumber, y: y - 5 });
   };
 
   writePageHeader();
