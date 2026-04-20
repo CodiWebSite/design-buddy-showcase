@@ -2,6 +2,7 @@ import type { AuditResult, Category, Issue } from "./types";
 import { detectTechnologies } from "./detectTech";
 import { estimateWebVitals } from "./webVitals";
 import { lookupDns, type DnsInfo } from "./dnsLookup";
+import { runExtraChecks, checkSecurityHeaders } from "./extraChecks";
 
 // Multiple CORS proxies tried in order until one succeeds.
 // Each entry knows how to build the URL and how to extract the text body.
@@ -60,7 +61,10 @@ async function fetchWithTimeout(url: string, ms = 12000): Promise<Response> {
 }
 
 /** Try each proxy in turn; return the first non-empty body that looks valid. */
-async function fetchViaProxies(target: string, opts?: { allowEmpty?: boolean }): Promise<{ body: string; proxy: string } | null> {
+async function fetchViaProxies(
+  target: string,
+  opts?: { allowEmpty?: boolean },
+): Promise<{ body: string; proxy: string; headers: Headers } | null> {
   const errors: string[] = [];
   for (const p of PROXIES) {
     try {
@@ -69,12 +73,13 @@ async function fetchViaProxies(target: string, opts?: { allowEmpty?: boolean }):
         errors.push(`${p.name}: HTTP ${res.status}`);
         continue;
       }
+      const headers = res.headers;
       const body = await p.parse(res);
       if (!opts?.allowEmpty && (!body || body.length < 50)) {
         errors.push(`${p.name}: gol`);
         continue;
       }
-      return { body: body || "", proxy: p.name };
+      return { body: body || "", proxy: p.name, headers };
     } catch (e) {
       errors.push(`${p.name}: ${(e as Error).message}`);
     }
@@ -83,7 +88,7 @@ async function fetchViaProxies(target: string, opts?: { allowEmpty?: boolean }):
   return null;
 }
 
-async function fetchSite(url: string): Promise<{ html: string; finalUrl: string; fetchMs: number; bytes: number; proxy: string }> {
+async function fetchSite(url: string): Promise<{ html: string; finalUrl: string; fetchMs: number; bytes: number; proxy: string; headers: Headers }> {
   const start = performance.now();
   const result = await fetchViaProxies(url);
   const fetchMs = Math.round(performance.now() - start);
@@ -95,7 +100,7 @@ async function fetchSite(url: string): Promise<{ html: string; finalUrl: string;
   if (!/<html|<!doctype/i.test(html)) {
     throw new Error("Răspunsul primit nu pare a fi HTML. Site-ul ar putea bloca proxy-urile sau cere autentificare.");
   }
-  return { html, finalUrl: url, fetchMs, bytes, proxy: result.proxy };
+  return { html, finalUrl: url, fetchMs, bytes, proxy: result.proxy, headers: result.headers };
 }
 
 async function fetchText(url: string): Promise<{ ok: boolean; text: string }> {
@@ -125,7 +130,7 @@ export async function runAudit(
   const url = normalizeUrl(rawUrl);
 
   onProgress?.(0, "Conectare la site...");
-  const { html, finalUrl, fetchMs, bytes } = await fetchSite(url);
+  const { html, finalUrl, fetchMs, bytes, headers } = await fetchSite(url);
 
   onProgress?.(1, "Analiză securitate...");
   const doc = parseDoc(html);
@@ -601,6 +606,50 @@ export async function runAudit(
     console.warn("DNS lookup eșuat:", e);
   }
 
+  // ---------- EXTRA CHECKS (accessibility, privacy, modern web, SRI, etc.) ----------
+  const extra = runExtraChecks(doc, html, isHttps);
+  for (const issue of extra.issues) {
+    // Use small penalties; many are info-level
+    const points = issue.severity === "critical" ? 15 : issue.severity === "warning" ? 6 : 2;
+    scores[issue.category] -= points;
+    issues.push(issue);
+  }
+
+  // ---------- SECURITY HEADERS (only if proxy preserved them) ----------
+  const headerCheck = checkSecurityHeaders(headers, isHttps);
+  for (const issue of headerCheck.issues) {
+    const points = issue.severity === "warning" ? 5 : 2;
+    scores[issue.category] -= points;
+    issues.push(issue);
+  }
+
+  // ---------- security.txt + llms.txt ----------
+  const [securityTxtRes, llmsTxtRes] = await Promise.all([
+    fetchText(`${origin}/.well-known/security.txt`),
+    fetchText(`${origin}/llms.txt`),
+  ]);
+  const securityTxt = securityTxtRes.ok && /contact:/i.test(securityTxtRes.text);
+  const llmsTxt = llmsTxtRes.ok && llmsTxtRes.text.length > 10;
+
+  if (!securityTxt) {
+    penalize("security", 2, {
+      category: "security",
+      severity: "info",
+      title: "Lipsește fișierul security.txt (RFC 9116)",
+      description: "security.txt oferă cercetătorilor de securitate un canal standardizat pentru a raporta vulnerabilități.",
+      recommendation: "Creează /.well-known/security.txt cu cel puțin: Contact: mailto:security@domeniul-tau.ro",
+    });
+  }
+  if (!llmsTxt) {
+    penalize("seo", 1, {
+      category: "seo",
+      severity: "info",
+      title: "Lipsește fișierul llms.txt pentru crawlerele AI",
+      description: "llms.txt e un standard emergent pentru a oferi contextul site-ului către modelele LLM (ChatGPT, Claude, Perplexity).",
+      recommendation: "Creează /llms.txt cu un sumar markdown al site-ului și link-uri către pagini-cheie.",
+    });
+  }
+
   // ---------- FINAL ----------
   const finalScores: Record<Category, number> = {
     security: clamp(scores.security),
@@ -641,7 +690,7 @@ export async function runAudit(
       viewport,
       favicon,
       isHttps,
-      server: null,
+      server: headerCheck.server,
       technologies,
       robotsTxt: { found: robotsRes.ok, hasSitemap: robotsHasSitemap },
       sitemapXml: { found: sitemapRes.ok, urlCount: sitemapUrlCount },
@@ -661,6 +710,30 @@ export async function runAudit(
             hasCaa: dnsInfo.hasCaa,
           }
         : null,
+      privacy: extra.privacy,
+      accessibility: {
+        linksWithoutText: extra.accessibility.linksWithoutText,
+        buttonsWithoutText: extra.accessibility.buttonsWithoutText,
+        inputsWithoutLabel: extra.accessibility.inputsWithoutLabel,
+        iframesWithoutTitle: extra.accessibility.iframesWithoutTitle,
+        headingSkipsCount: extra.accessibility.headingSkips.length,
+        viewportBlocksZoom: extra.accessibility.viewportBlocksZoom,
+        skipLink: extra.accessibility.skipLink,
+      },
+      modernWeb: extra.modernWeb,
+      securityHeaders: {
+        available: headerCheck.headersAvailable,
+        hsts: headerCheck.hsts,
+        csp: headerCheck.csp,
+        xFrameOptions: headerCheck.xFrameOptions,
+        xContentTypeOptions: headerCheck.xContentTypeOptions,
+        referrerPolicy: headerCheck.referrerPolicy,
+        permissionsPolicy: headerCheck.permissionsPolicy,
+        poweredBy: headerCheck.poweredBy,
+        server: headerCheck.server,
+      },
+      securityTxt,
+      llmsTxt,
     },
   };
 }

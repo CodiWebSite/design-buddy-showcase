@@ -178,7 +178,101 @@ const AuditDashboard = ({ result, onReset }: Props) => {
         </div>
       )}
 
-      {/* CTA */}
+      {/* Security Headers + Privacy */}
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="card-premium rounded-xl p-5 space-y-3">
+          <div className="flex items-center justify-between mb-1">
+            <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
+              Headere de securitate HTTP
+            </h4>
+            {!result.metadata.securityHeaders.available && (
+              <span className="text-[10px] text-muted-foreground italic">indisponibile via proxy</span>
+            )}
+          </div>
+          {result.metadata.securityHeaders.available ? (
+            [
+              { label: "HSTS", ok: result.metadata.securityHeaders.hsts },
+              { label: "Content-Security-Policy", ok: result.metadata.securityHeaders.csp },
+              { label: "X-Frame-Options", ok: result.metadata.securityHeaders.xFrameOptions },
+              { label: "X-Content-Type-Options", ok: result.metadata.securityHeaders.xContentTypeOptions },
+              { label: "Referrer-Policy", ok: result.metadata.securityHeaders.referrerPolicy },
+              { label: "Permissions-Policy", ok: result.metadata.securityHeaders.permissionsPolicy },
+            ].map((row) => (
+              <div key={row.label} className="flex items-center justify-between text-sm border-b border-border/50 pb-2 last:border-0 last:pb-0">
+                <span className="text-muted-foreground">{row.label}</span>
+                <span className={`font-semibold ${row.ok ? "text-emerald-500" : "text-amber-500"}`}>
+                  {row.ok ? "✓ Activ" : "— Lipsește"}
+                </span>
+              </div>
+            ))
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Proxy-ul CORS nu expune headerele site-ului real. Pentru verificare exactă folosește securityheaders.com.
+            </p>
+          )}
+        </div>
+
+        <div className="card-premium rounded-xl p-5 space-y-3">
+          <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1">
+            Privacy & GDPR
+          </h4>
+          <div className="flex items-center justify-between text-sm border-b border-border/50 pb-2">
+            <span className="text-muted-foreground">Banner de cookies</span>
+            <span className={`font-semibold ${result.metadata.privacy.cookieBanner ? "text-emerald-500" : "text-amber-500"}`}>
+              {result.metadata.privacy.cookieBanner ? "✓ Detectat" : "— Negăsit"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-sm border-b border-border/50 pb-2">
+            <span className="text-muted-foreground">Google Fonts CDN extern</span>
+            <span className={`font-semibold ${!result.metadata.privacy.googleFontsExternal ? "text-emerald-500" : "text-amber-500"}`}>
+              {result.metadata.privacy.googleFontsExternal ? "⚠ Da (risc GDPR)" : "✓ Nu"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-sm border-b border-border/50 pb-2">
+            <span className="text-muted-foreground">Scripturi de tracking</span>
+            <span className="font-semibold text-foreground text-right max-w-[60%] truncate">
+              {result.metadata.privacy.trackingScripts.length > 0
+                ? result.metadata.privacy.trackingScripts.join(", ")
+                : "Niciunul"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-sm border-b border-border/50 pb-2">
+            <span className="text-muted-foreground">security.txt</span>
+            <span className={`font-semibold ${result.metadata.securityTxt ? "text-emerald-500" : "text-muted-foreground"}`}>
+              {result.metadata.securityTxt ? "✓ Da" : "— Nu"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">llms.txt (AI)</span>
+            <span className={`font-semibold ${result.metadata.llmsTxt ? "text-emerald-500" : "text-muted-foreground"}`}>
+              {result.metadata.llmsTxt ? "✓ Da" : "— Nu"}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Modern Web / PWA */}
+      <div className="card-premium rounded-xl p-5">
+        <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-3">
+          Web modern & PWA
+        </h4>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { label: "Web Manifest", ok: result.metadata.modernWeb.hasManifest },
+            { label: "theme-color", ok: result.metadata.modernWeb.hasThemeColor },
+            { label: "Apple Touch Icon", ok: result.metadata.modernWeb.hasAppleTouchIcon },
+            { label: "og:image", ok: result.metadata.modernWeb.hasOgImage },
+          ].map((row) => (
+            <div key={row.label} className="bg-secondary/30 rounded-lg p-3 text-center">
+              <p className={`text-2xl font-bold ${row.ok ? "text-emerald-500" : "text-muted-foreground/60"}`}>
+                {row.ok ? "✓" : "—"}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">{row.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="rounded-2xl p-8 text-center bg-gradient-to-br from-primary/20 via-primary/10 to-transparent border border-primary/30">
         <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">Vrei să remediem aceste probleme?</h3>
         <p className="text-muted-foreground max-w-xl mx-auto mb-6">
