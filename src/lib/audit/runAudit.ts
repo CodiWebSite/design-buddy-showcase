@@ -178,6 +178,29 @@ export async function runAudit(
     });
   }
 
+  // Insecure forms — forms posting to http://
+  const forms = Array.from(doc.querySelectorAll("form"));
+  const insecureForms = forms.filter((f) => /^http:\/\//i.test(f.getAttribute("action") || ""));
+  const sensitiveInputs = doc.querySelectorAll('input[type="password"], input[type="email"]').length;
+  if (insecureForms.length > 0) {
+    penalize("security", 25, {
+      category: "security",
+      severity: "critical",
+      title: `${insecureForms.length} formular(e) trimit datele prin HTTP necriptat`,
+      description: "Datele introduse de utilizatori (parole, emailuri) sunt trimise în clar și pot fi interceptate.",
+      recommendation: "Schimbă atributul action al formularelor în URL HTTPS și forțează HTTPS pe site.",
+    });
+  }
+  if (!isHttps && sensitiveInputs > 0) {
+    penalize("security", 30, {
+      category: "security",
+      severity: "critical",
+      title: `${sensitiveInputs} câmp(uri) sensibile pe pagină HTTP`,
+      description: "Pagina conține câmpuri de parolă/email dar nu folosește HTTPS — datele sunt vizibile în rețea.",
+      recommendation: "Mută imediat tot site-ul pe HTTPS. Browserele blochează tot mai agresiv astfel de pagini.",
+    });
+  }
+
   onProgress?.(2, "Analiză SEO...");
 
   // ---------- SEO ----------
