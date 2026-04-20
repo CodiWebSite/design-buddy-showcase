@@ -2,19 +2,19 @@ import { Quote, Star } from "lucide-react";
 
 const testimonials = [
   {
-    name: "Andrei P.",
+    name: "Codrin C.",
     role: "DJ Funky Events",
     quote:
       "Au înțeles din prima ce vreau. Am acum un site care arată profesionist și prin care primesc cereri de booking direct din Google. Recomand fără ezitare.",
   },
   {
-    name: "Cristian M.",
+    name: "Scuturasu C.",
     role: "InstalPro Pașcani",
     quote:
       "Aveam nevoie de un site serios pentru servicii și produse. S-a făcut treabă curată, rapid și cu suport real după lansare. Comunicare excelentă.",
   },
   {
-    name: "Cosmin G.",
+    name: "David C.",
     role: "DJ Cozo",
     quote:
       "Site-ul arată exact cum mi-am dorit — modern și diferit. Mi-a crescut credibilitatea în fața clienților din evenimente.",
