@@ -7,6 +7,7 @@ const navLinks = [
   { href: "#portofoliu", label: "Portofoliu" },
   { href: "#servicii", label: "Servicii" },
   { href: "#preturi", label: "Prețuri" },
+  { href: "#hosting", label: "Hosting" },
   { href: "#contact", label: "Contact" },
 ];
 
