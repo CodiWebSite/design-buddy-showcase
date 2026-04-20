@@ -9,7 +9,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="md:col-span-2">
             <a href="#" className="inline-flex items-center mb-4">
-              <img src={logo} alt="WebCraft - Web Design Agency" className="h-12 w-auto" />
+              <img src={logo} alt="WebCraft - Web Design Agency" className="h-20 w-auto" />
             </a>
             <p className="text-muted-foreground max-w-md mb-6">
               Creăm experiențe digitale memorabile care transformă vizitatorii în clienți fideli. 
