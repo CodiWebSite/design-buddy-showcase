@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://webcraft.djfunkyevents.ro/sitemap.xml

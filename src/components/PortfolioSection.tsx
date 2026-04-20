@@ -1,66 +1,14 @@
-import { ArrowUpRight, ImageOff } from "lucide-react";
+import { ArrowUpRight, ImageOff, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { portfolioCases, type PortfolioCase } from "@/data/portfolioCases";
 
-const screenshot = (url: string, wait = 3, viewport = 1280) =>
-  `https://image.thum.io/get/width/1280/crop/800/viewportWidth/${viewport}/wait/${wait}/noanimate/png/${url}`;
-
-const portfolioItems = [
-  {
-    title: "DJ Funky Events",
-    business: "DJ & Evenimente",
-    challenge:
-      "Avea nevoie de o prezență online care să transmită profesionalism și să simplifice cererile de booking.",
-    solution:
-      "Site premium cu galerie, prezentare servicii, formular de rezervare și radio live integrat.",
-    url: "https://djfunkyevents.ro/",
-    image: screenshot("https://djfunkyevents.ro/"),
-    tags: ["Booking", "Radio Live", "Mobil-first"],
-  },
-  {
-    title: "InstalPro Pașcani",
-    business: "Servicii & Magazin",
-    challenge:
-      "Trebuia să prezinte clar atât serviciile, cât și un catalog de produse pentru clienți locali.",
-    solution:
-      "Platformă cu structură de servicii, catalog și CTA-uri clare pentru contact și comandă.",
-    url: "https://instalpropascani.ro/",
-    image: screenshot("https://instalpropascani.ro/"),
-    tags: ["Catalog", "Servicii", "Local SEO"],
-  },
-  {
-    title: "DJ Cozo",
-    business: "Brand personal artistic",
-    challenge:
-      "Voia un site care să iasă din tipare și să-l diferențieze față de alți DJ.",
-    solution:
-      "Design imersiv, animații rafinate și o prezentare artistică memorabilă.",
-    url: "https://dj-cozo.ro/",
-    image: screenshot("https://dj-cozo.ro/", 15, 1440),
-    tags: ["Design Premium", "Animații", "Brand"],
-  },
-  {
-    title: "Radio DJ Funky Events",
-    business: "Radio Online",
-    challenge:
-      "Avea nevoie de o platformă dedicată streamingului live, ușor de accesat.",
-    solution:
-      "Player audio dedicat, interfață curată și integrare cu site-ul principal.",
-    url: "https://radio.djfunkyevents.ro/",
-    image: screenshot("https://radio.djfunkyevents.ro/"),
-    tags: ["Streaming", "Audio", "Live"],
-  },
-];
-
-type PortfolioItem = (typeof portfolioItems)[number];
-
-const PortfolioCard = ({ item }: { item: PortfolioItem }) => {
+const PortfolioCard = ({ item }: { item: PortfolioCase }) => {
   const [status, setStatus] = useState<"loading" | "loaded" | "error">("loading");
 
   return (
-    <a
-      href={item.url}
-      target="_blank"
-      rel="noopener noreferrer"
+    <Link
+      to={`/portofoliu/${item.slug}`}
       className="group card-premium glow-border rounded-2xl overflow-hidden hover-lift block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
     >
       <div className="relative h-56 overflow-hidden bg-muted">
@@ -75,7 +23,7 @@ const PortfolioCard = ({ item }: { item: PortfolioItem }) => {
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-secondary/40 to-muted text-muted-foreground">
             <ImageOff className="w-8 h-8 text-primary/70" />
             <span className="text-sm font-medium">{item.title}</span>
-            <span className="text-xs">Vezi site-ul live →</span>
+            <span className="text-xs">Vezi studiul de caz →</span>
           </div>
         ) : (
           <img
@@ -121,7 +69,7 @@ const PortfolioCard = ({ item }: { item: PortfolioItem }) => {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 mb-4">
           {item.tags.map((tag) => (
             <span
               key={tag}
@@ -131,8 +79,12 @@ const PortfolioCard = ({ item }: { item: PortfolioItem }) => {
             </span>
           ))}
         </div>
+
+        <span className="inline-flex items-center gap-1 text-primary font-semibold text-sm">
+          Vezi studiul de caz <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+        </span>
       </div>
-    </a>
+    </Link>
   );
 };
 
@@ -156,8 +108,8 @@ const PortfolioSection = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-6xl mx-auto">
-          {portfolioItems.map((item) => (
-            <PortfolioCard key={item.url} item={item} />
+          {portfolioCases.map((item) => (
+            <PortfolioCard key={item.slug} item={item} />
           ))}
         </div>
 
