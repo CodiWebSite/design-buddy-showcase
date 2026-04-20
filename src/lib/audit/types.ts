@@ -49,6 +49,39 @@ export interface AuditResult {
       hasDmarc: boolean;
       hasCaa: boolean;
     } | null;
+    privacy: {
+      googleFontsExternal: boolean;
+      trackingScripts: string[];
+      cookieBanner: boolean;
+    };
+    accessibility: {
+      linksWithoutText: number;
+      buttonsWithoutText: number;
+      inputsWithoutLabel: number;
+      iframesWithoutTitle: number;
+      headingSkipsCount: number;
+      viewportBlocksZoom: boolean;
+      skipLink: boolean;
+    };
+    modernWeb: {
+      hasManifest: boolean;
+      hasThemeColor: boolean;
+      hasAppleTouchIcon: boolean;
+      hasOgImage: boolean;
+    };
+    securityHeaders: {
+      available: boolean;
+      hsts: boolean;
+      csp: boolean;
+      xFrameOptions: boolean;
+      xContentTypeOptions: boolean;
+      referrerPolicy: boolean;
+      permissionsPolicy: boolean;
+      poweredBy: string | null;
+      server: string | null;
+    };
+    securityTxt: boolean;
+    llmsTxt: boolean;
   };
 }
 
