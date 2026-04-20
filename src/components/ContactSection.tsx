@@ -1,6 +1,6 @@
 import { Mail, Phone, MapPin, Send, MessageCircle, Clock } from "lucide-react";
 import { Button } from "./ui/button";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const WHATSAPP_NUMBER = "40755649856";
@@ -17,6 +17,29 @@ const ContactSection = () => {
     message: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const messageRef = useRef<HTMLTextAreaElement>(null);
+  const prefilledRef = useRef(false);
+
+  useEffect(() => {
+    if (prefilledRef.current) return;
+    const params = new URLSearchParams(window.location.search);
+    const config = params.get("config");
+    if (config) {
+      prefilledRef.current = true;
+      setFormData((prev) => ({
+        ...prev,
+        message: prev.message ? prev.message : config,
+      }));
+      setTimeout(() => {
+        const el = document.getElementById("contact");
+        el?.scrollIntoView({ behavior: "smooth", block: "start" });
+        messageRef.current?.focus({ preventScroll: true });
+      }, 100);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("config");
+      window.history.replaceState({}, "", url.pathname + url.hash);
+    }
+  }, []);
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -208,6 +231,7 @@ const ContactSection = () => {
                 </label>
                 <textarea
                   id="message"
+                  ref={messageRef}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   rows={5}
