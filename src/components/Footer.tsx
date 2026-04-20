@@ -1,4 +1,4 @@
-import { Mail, Phone, MessageCircle } from "lucide-react";
+import { Mail, Phone, MessageCircle, Facebook } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/webcraft-logo.png";
 
@@ -61,6 +61,16 @@ const Footer = () => {
               >
                 <Mail className="w-4 h-4 text-primary" />
                 Email
+              </a>
+              <a
+                href="https://www.facebook.com/profile.php?id=61570975541766"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary border border-border text-foreground hover:bg-secondary/70 transition-colors text-sm font-medium"
+              >
+                <Facebook className="w-4 h-4 text-primary" />
+                Facebook
               </a>
             </div>
           </div>
