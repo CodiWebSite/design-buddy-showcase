@@ -1,58 +1,94 @@
-import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { Mail, Phone, MessageCircle } from "lucide-react";
 import logo from "@/assets/webcraft-logo.png";
+
+const quickLinks = [
+  { href: "#portofoliu", label: "Portofoliu" },
+  { href: "#servicii", label: "Servicii" },
+  { href: "#proces", label: "Proces" },
+  { href: "#preturi", label: "Pachete" },
+  { href: "#faq", label: "FAQ" },
+  { href: "#contact", label: "Contact" },
+];
+
+const services = [
+  "Web Design",
+  "Dezvoltare Web",
+  "Redesign Website",
+  "SEO Setup",
+  "Hosting Premium",
+  "Mentenanță & Suport",
+];
 
 const Footer = () => {
   return (
-    <footer className="py-12 border-t border-border">
+    <footer className="py-14 border-t border-border bg-background">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="grid md:grid-cols-4 gap-8 mb-12">
+        <div className="grid md:grid-cols-4 gap-10 mb-12">
           {/* Brand */}
           <div className="md:col-span-2">
-            <a href="#" className="inline-flex items-center mb-4">
-              <img src={logo} alt="WebCraft - Web Design Agency" className="h-20 w-auto drop-shadow-[0_4px_20px_hsl(var(--primary)/0.4)]" />
+            <a href="#acasa" className="inline-flex items-center mb-5" aria-label="WebCraft">
+              <img
+                src={logo}
+                alt="WebCraft"
+                className="h-16 w-auto drop-shadow-[0_4px_20px_hsl(var(--primary)/0.4)]"
+              />
             </a>
-            <p className="text-muted-foreground max-w-md mb-6">
-              Creăm experiențe digitale memorabile care transformă vizitatorii în clienți fideli. 
-              Fiecare proiect este unic, fiecare detaliu contează.
+            <p className="text-muted-foreground max-w-md mb-6 leading-relaxed">
+              Construim site-uri premium pentru afaceri din România care vor să arate profesionist
+              și să primească mai multe cereri de la clienți reali.
             </p>
-            {/* Social Links */}
-            <div className="flex gap-4">
-              {[Facebook, Instagram, Twitter, Linkedin].map((Icon, index) => (
-                <a
-                  key={index}
-                  href="#"
-                  className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
-                >
-                  <Icon className="w-5 h-5" />
-                </a>
-              ))}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a
+                href="https://wa.me/40755649856"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/30 text-foreground hover:bg-primary/20 transition-colors text-sm font-medium"
+              >
+                <MessageCircle className="w-4 h-4 text-primary" />
+                WhatsApp
+              </a>
+              <a
+                href="tel:+40755649856"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary border border-border text-foreground hover:bg-secondary/70 transition-colors text-sm font-medium"
+              >
+                <Phone className="w-4 h-4 text-primary" />
+                +40 755 649 856
+              </a>
+              <a
+                href="mailto:contact@webcraft.ro"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary border border-border text-foreground hover:bg-secondary/70 transition-colors text-sm font-medium"
+              >
+                <Mail className="w-4 h-4 text-primary" />
+                Email
+              </a>
             </div>
           </div>
 
-          {/* Quick Links */}
           <div>
-            <h4 className="font-display font-semibold text-foreground mb-4">Link-uri Rapide</h4>
+            <h4 className="font-display font-semibold text-foreground mb-4">Navigare</h4>
             <ul className="space-y-3">
-              {["Acasă", "Portofoliu", "Servicii", "Hosting", "Prețuri", "Contact"].map((link) => (
-                <li key={link}>
+              {quickLinks.map((link) => (
+                <li key={link.href}>
                   <a
-                    href={`#${link.toLowerCase().replace("ț", "t")}`}
-                    className="text-muted-foreground hover:text-primary transition-colors"
+                    href={link.href}
+                    className="text-muted-foreground hover:text-primary transition-colors text-sm"
                   >
-                    {link}
+                    {link.label}
                   </a>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Services */}
           <div>
             <h4 className="font-display font-semibold text-foreground mb-4">Servicii</h4>
             <ul className="space-y-3">
-              {["Web Design", "Dezvoltare Web", "SEO", "Hosting", "Mentenanță"].map((service) => (
+              {services.map((service) => (
                 <li key={service}>
-                  <a href="#servicii" className="text-muted-foreground hover:text-primary transition-colors">
+                  <a
+                    href="#servicii"
+                    className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                  >
                     {service}
                   </a>
                 </li>
@@ -61,16 +97,21 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-muted-foreground text-sm">
             © 2026 WebCraft. Toate drepturile rezervate.
           </p>
           <div className="flex gap-6 text-sm">
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <a
+              href="#contact"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
               Termeni & Condiții
             </a>
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <a
+              href="#contact"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
               Politica de Confidențialitate
             </a>
           </div>
