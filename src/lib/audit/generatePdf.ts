@@ -138,6 +138,7 @@ export function generateAuditPdf(result: AuditResult): jsPDF {
   pdf.setTextColor(15, 23, 42);
   pdf.setFontSize(18);
   pdf.setFont("helvetica", "bold");
+  markSection("Scoruri pe categorii");
   pdf.text("Scoruri pe categorii", 20, y);
   y += 10;
 
@@ -179,6 +180,7 @@ export function generateAuditPdf(result: AuditResult): jsPDF {
   pdf.setTextColor(15, 23, 42);
   pdf.setFontSize(16);
   pdf.setFont("helvetica", "bold");
+  markSection("Informatii detectate");
   pdf.text("Informatii detectate", 20, y);
   y += 8;
 
@@ -233,6 +235,7 @@ export function generateAuditPdf(result: AuditResult): jsPDF {
   pdf.setTextColor(15, 23, 42);
   pdf.setFontSize(13);
   pdf.setFont("helvetica", "bold");
+  markSection("Privacy, headere & accesibilitate");
   pdf.text("Privacy, headere & accesibilitate", 20, y);
   y += 7;
 
@@ -295,6 +298,7 @@ export function generateAuditPdf(result: AuditResult): jsPDF {
   pdf.setTextColor(15, 23, 42);
   pdf.setFontSize(16);
   pdf.setFont("helvetica", "bold");
+  markSection(`Sumar probleme (${result.issues.length})`);
   pdf.text(`Sumar probleme (${result.issues.length} in total)`, 20, y);
   y += 8;
 
