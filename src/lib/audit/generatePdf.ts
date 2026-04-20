@@ -217,7 +217,55 @@ export function generateAuditPdf(result: AuditResult): jsPDF {
     y += 6;
   }
 
-  // Section: Issues
+  // Privacy & accessibility extras
+  y += 4;
+  ensureSpace(40);
+  pdf.setTextColor(15, 23, 42);
+  pdf.setFontSize(13);
+  pdf.setFont("helvetica", "bold");
+  pdf.text("Privacy, headere & accesibilitate", 20, y);
+  y += 7;
+
+  const extraRows: [string, string][] = [
+    ["Banner cookies detectat", meta.privacy.cookieBanner ? "Da" : "Nu"],
+    ["Google Fonts pe CDN extern", meta.privacy.googleFontsExternal ? "Da (risc GDPR)" : "Nu"],
+    ["Scripturi tracking", meta.privacy.trackingScripts.length ? meta.privacy.trackingScripts.join(", ") : "Niciunul"],
+    ["security.txt", meta.securityTxt ? "Da" : "Lipseste"],
+    ["llms.txt (AI crawlers)", meta.llmsTxt ? "Da" : "Lipseste"],
+    ["Web manifest", meta.modernWeb.hasManifest ? "Da" : "Nu"],
+    ["theme-color", meta.modernWeb.hasThemeColor ? "Da" : "Nu"],
+    ["apple-touch-icon", meta.modernWeb.hasAppleTouchIcon ? "Da" : "Nu"],
+    ["og:image", meta.modernWeb.hasOgImage ? "Da" : "Nu"],
+    ["Linkuri fara text accesibil", String(meta.accessibility.linksWithoutText)],
+    ["Butoane fara text accesibil", String(meta.accessibility.buttonsWithoutText)],
+    ["Inputuri fara label", String(meta.accessibility.inputsWithoutLabel)],
+    ["Iframe fara title", String(meta.accessibility.iframesWithoutTitle)],
+    ["Salturi in ierarhia heading", String(meta.accessibility.headingSkipsCount)],
+    ["Viewport blocheaza zoom", meta.accessibility.viewportBlocksZoom ? "Da (problema)" : "Nu"],
+  ];
+
+  if (meta.securityHeaders.available) {
+    extraRows.push(
+      ["HSTS", meta.securityHeaders.hsts ? "Activ" : "Lipseste"],
+      ["Content-Security-Policy", meta.securityHeaders.csp ? "Activ" : "Lipseste"],
+      ["X-Frame-Options", meta.securityHeaders.xFrameOptions ? "Activ" : "Lipseste"],
+      ["Referrer-Policy", meta.securityHeaders.referrerPolicy ? "Activ" : "Lipseste"],
+      ["Permissions-Policy", meta.securityHeaders.permissionsPolicy ? "Activ" : "Lipseste"],
+    );
+  }
+
+  pdf.setFontSize(10);
+  pdf.setFont("helvetica", "normal");
+  for (const [k, v] of extraRows) {
+    ensureSpace(7);
+    pdf.setTextColor(100, 116, 139);
+    pdf.text(clean(k), 22, y);
+    pdf.setTextColor(15, 23, 42);
+    const value = clean(String(v));
+    const truncated = value.length > 70 ? value.slice(0, 67) + "..." : value;
+    pdf.text(truncated, 75, y);
+    y += 6;
+  }
   y += 8;
   ensureSpace(20);
   pdf.setTextColor(15, 23, 42);
