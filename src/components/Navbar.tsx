@@ -1,6 +1,7 @@
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import logo from "@/assets/webcraft-logo.png";
 
 const navLinks = [
   { href: "#acasa", label: "Acasă" },
@@ -19,13 +20,8 @@ const Navbar = () => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-18">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-display font-bold text-xl">W</span>
-            </div>
-            <span className="font-display font-bold text-xl text-foreground">
-              WebCraft
-            </span>
+          <a href="#" className="flex items-center">
+            <img src={logo} alt="WebCraft - Web Design Agency" className="h-10 lg:h-12 w-auto" />
           </a>
 
           {/* Desktop Navigation */}

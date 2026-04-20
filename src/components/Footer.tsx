@@ -1,4 +1,5 @@
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import logo from "@/assets/webcraft-logo.png";
 
 const Footer = () => {
   return (
@@ -7,13 +8,8 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
           <div className="md:col-span-2">
-            <a href="#" className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                <span className="text-primary-foreground font-display font-bold text-xl">W</span>
-              </div>
-              <span className="font-display font-semibold text-xl text-foreground">
-                WebCraft<span className="text-primary">.</span>
-              </span>
+            <a href="#" className="inline-flex items-center mb-4">
+              <img src={logo} alt="WebCraft - Web Design Agency" className="h-12 w-auto" />
             </a>
             <p className="text-muted-foreground max-w-md mb-6">
               Creăm experiențe digitale memorabile care transformă vizitatorii în clienți fideli. 
