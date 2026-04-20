@@ -60,7 +60,10 @@ async function fetchWithTimeout(url: string, ms = 12000): Promise<Response> {
 }
 
 /** Try each proxy in turn; return the first non-empty body that looks valid. */
-async function fetchViaProxies(target: string, opts?: { allowEmpty?: boolean }): Promise<{ body: string; proxy: string } | null> {
+async function fetchViaProxies(
+  target: string,
+  opts?: { allowEmpty?: boolean },
+): Promise<{ body: string; proxy: string; headers: Headers } | null> {
   const errors: string[] = [];
   for (const p of PROXIES) {
     try {
@@ -69,12 +72,13 @@ async function fetchViaProxies(target: string, opts?: { allowEmpty?: boolean }):
         errors.push(`${p.name}: HTTP ${res.status}`);
         continue;
       }
+      const headers = res.headers;
       const body = await p.parse(res);
       if (!opts?.allowEmpty && (!body || body.length < 50)) {
         errors.push(`${p.name}: gol`);
         continue;
       }
-      return { body: body || "", proxy: p.name };
+      return { body: body || "", proxy: p.name, headers };
     } catch (e) {
       errors.push(`${p.name}: ${(e as Error).message}`);
     }
@@ -83,7 +87,7 @@ async function fetchViaProxies(target: string, opts?: { allowEmpty?: boolean }):
   return null;
 }
 
-async function fetchSite(url: string): Promise<{ html: string; finalUrl: string; fetchMs: number; bytes: number; proxy: string }> {
+async function fetchSite(url: string): Promise<{ html: string; finalUrl: string; fetchMs: number; bytes: number; proxy: string; headers: Headers }> {
   const start = performance.now();
   const result = await fetchViaProxies(url);
   const fetchMs = Math.round(performance.now() - start);
@@ -95,7 +99,7 @@ async function fetchSite(url: string): Promise<{ html: string; finalUrl: string;
   if (!/<html|<!doctype/i.test(html)) {
     throw new Error("Răspunsul primit nu pare a fi HTML. Site-ul ar putea bloca proxy-urile sau cere autentificare.");
   }
-  return { html, finalUrl: url, fetchMs, bytes, proxy: result.proxy };
+  return { html, finalUrl: url, fetchMs, bytes, proxy: result.proxy, headers: result.headers };
 }
 
 async function fetchText(url: string): Promise<{ ok: boolean; text: string }> {
