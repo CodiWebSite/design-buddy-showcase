@@ -18,10 +18,10 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between h-28 lg:h-36">
+        <div className="flex items-center justify-between h-20 lg:h-24">
           {/* Logo */}
           <a href="#" className="flex items-center">
-            <img src={logo} alt="WebCraft - Web Design Agency" className="h-28 lg:h-36 w-auto drop-shadow-[0_4px_20px_hsl(var(--primary)/0.4)]" />
+            <img src={logo} alt="WebCraft - Web Design Agency" className="h-14 lg:h-16 w-auto drop-shadow-[0_4px_20px_hsl(var(--primary)/0.4)]" />
           </a>
 
           {/* Desktop Navigation */}
