@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 import logo from "@/assets/webcraft-logo.png";
 
 const quickLinks = [
-  { href: "#portofoliu", label: "Portofoliu" },
-  { href: "#servicii", label: "Servicii" },
-  { href: "#proces", label: "Proces" },
-  { href: "#preturi", label: "Pachete" },
-  { href: "#faq", label: "FAQ" },
-  { href: "#contact", label: "Contact" },
+  { href: "/#portofoliu", label: "Portofoliu" },
+  { href: "/#servicii", label: "Servicii" },
+  { href: "/#preturi", label: "Pachete" },
+  { href: "/blog", label: "Blog", isRoute: true },
+  { href: "/despre", label: "Despre", isRoute: true },
+  { href: "/audit", label: "Audit gratuit", isRoute: true },
+  { href: "/#contact", label: "Contact" },
 ];
 
 const services = [
@@ -80,12 +81,21 @@ const Footer = () => {
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className="text-muted-foreground hover:text-primary transition-colors text-sm"
-                  >
-                    {link.label}
-                  </a>
+                  {link.isRoute ? (
+                    <Link
+                      to={link.href}
+                      className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                    >
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>

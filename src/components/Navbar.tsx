@@ -7,9 +7,9 @@ import logo from "@/assets/webcraft-logo.png";
 const navLinks = [
   { href: "/#portofoliu", label: "Portofoliu" },
   { href: "/#servicii", label: "Servicii" },
-  { href: "/#proces", label: "Proces" },
   { href: "/#preturi", label: "Pachete" },
-  { href: "/#testimoniale", label: "Testimoniale" },
+  { href: "/blog", label: "Blog", isRoute: true },
+  { href: "/despre", label: "Despre", isRoute: true },
   { href: "/#faq", label: "FAQ" },
 ];
 
@@ -28,16 +28,26 @@ const Navbar = () => {
             />
           </Link>
 
-          <div className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium text-sm focus:outline-none focus-visible:text-foreground"
-              >
-                {link.label}
-              </a>
-            ))}
+          <div className="hidden lg:flex items-center gap-7">
+            {navLinks.map((link) =>
+              link.isRoute ? (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium text-sm focus:outline-none focus-visible:text-foreground"
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium text-sm focus:outline-none focus-visible:text-foreground"
+                >
+                  {link.label}
+                </a>
+              )
+            )}
             <Link
               to="/audit"
               className="inline-flex items-center gap-1.5 text-primary hover:text-primary/80 transition-colors duration-200 font-semibold text-sm"
@@ -66,16 +76,27 @@ const Navbar = () => {
         {isOpen && (
           <div className="lg:hidden py-4 border-t border-border animate-fade-up">
             <div className="flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors duration-200 font-medium py-3 px-3 rounded-lg"
-                >
-                  {link.label}
-                </a>
-              ))}
+              {navLinks.map((link) =>
+                link.isRoute ? (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors duration-200 font-medium py-3 px-3 rounded-lg"
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors duration-200 font-medium py-3 px-3 rounded-lg"
+                  >
+                    {link.label}
+                  </a>
+                )
+              )}
               <Link
                 to="/audit"
                 onClick={() => setIsOpen(false)}
