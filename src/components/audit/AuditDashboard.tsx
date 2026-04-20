@@ -77,6 +77,55 @@ const AuditDashboard = ({ result, onReset }: Props) => {
         ))}
       </div>
 
+      {/* Tech & infra detected */}
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="card-premium rounded-xl p-5">
+          <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-3">
+            Tehnologii detectate
+          </h4>
+          {result.metadata.technologies.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Nicio tehnologie cunoscută detectată.</p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {result.metadata.technologies.map((t) => (
+                <span
+                  key={t}
+                  className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/30"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="card-premium rounded-xl p-5 space-y-3">
+          <h4 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-1">
+            Indexare & crawling
+          </h4>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">robots.txt</span>
+            <span className={result.metadata.robotsTxt.found ? "text-emerald-500 font-semibold" : "text-destructive font-semibold"}>
+              {result.metadata.robotsTxt.found ? "✓ Găsit" : "✗ Lipsește"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">Sitemap în robots.txt</span>
+            <span className={result.metadata.robotsTxt.hasSitemap ? "text-emerald-500 font-semibold" : "text-amber-500 font-semibold"}>
+              {result.metadata.robotsTxt.hasSitemap ? "✓ Da" : "— Nu"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">sitemap.xml</span>
+            <span className={result.metadata.sitemapXml.found ? "text-emerald-500 font-semibold" : "text-destructive font-semibold"}>
+              {result.metadata.sitemapXml.found
+                ? `✓ ${result.metadata.sitemapXml.urlCount} URL-uri`
+                : "✗ Lipsește"}
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* CTA */}
       <div className="rounded-2xl p-8 text-center bg-gradient-to-br from-primary/20 via-primary/10 to-transparent border border-primary/30">
         <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">Vrei să remediem aceste probleme?</h3>
