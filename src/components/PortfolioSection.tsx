@@ -1,4 +1,5 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ImageOff } from "lucide-react";
+import { useState } from "react";
 
 const screenshot = (url: string, wait = 3, viewport = 1280) =>
   `https://image.thum.io/get/width/1280/crop/800/viewportWidth/${viewport}/wait/${wait}/noanimate/png/${url}`;
