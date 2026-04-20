@@ -130,7 +130,7 @@ export async function runAudit(
   const url = normalizeUrl(rawUrl);
 
   onProgress?.(0, "Conectare la site...");
-  const { html, finalUrl, fetchMs, bytes } = await fetchSite(url);
+  const { html, finalUrl, fetchMs, bytes, headers } = await fetchSite(url);
 
   onProgress?.(1, "Analiză securitate...");
   const doc = parseDoc(html);
