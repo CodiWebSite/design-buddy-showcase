@@ -1,12 +1,15 @@
 import { ExternalLink, ArrowUpRight } from "lucide-react";
 
+const screenshot = (url: string) =>
+  `https://image.thum.io/get/width/1280/crop/800/noanimate/${url}`;
+
 const portfolioItems = [
   {
     title: "DJ Funky Events",
     category: "Site Evenimente & Booking",
     description: "Platformă premium pentru DJ profesionist cu sistem de rezervări, galerie și radio live integrat.",
     url: "https://djfunkyevents.ro/",
-    image: `https://api.microlink.io/?url=https://djfunkyevents.ro/&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1280&viewport.height=800`,
+    image: screenshot("https://djfunkyevents.ro/"),
     tags: ["Booking", "Galerie", "Radio Live"],
   },
   {
@@ -14,7 +17,7 @@ const portfolioItems = [
     category: "Magazin Online & Servicii",
     description: "Magazin online complet pentru servicii casnice și industriale: climatizare, centrale, scule profesionale.",
     url: "https://instalpropascani.ro/",
-    image: `https://api.microlink.io/?url=https://instalpropascani.ro/&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1280&viewport.height=800`,
+    image: screenshot("https://instalpropascani.ro/"),
     tags: ["E-Commerce", "Catalog", "Servicii"],
   },
   {
@@ -22,7 +25,7 @@ const portfolioItems = [
     category: "Portfolio Artistic",
     description: "Site personal pentru DJ Cozo cu design imersiv, animații premium și prezentare artistică.",
     url: "https://dj-cozo.ro/",
-    image: `https://api.microlink.io/?url=https://dj-cozo.ro/&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1280&viewport.height=800`,
+    image: screenshot("https://dj-cozo.ro/"),
     tags: ["Portfolio", "Animații", "Design Premium"],
   },
   {
@@ -30,7 +33,7 @@ const portfolioItems = [
     category: "Radio Online",
     description: "Platformă radio online live pentru DJ Funky Events cu streaming audio și interfață modernă.",
     url: "https://radio.djfunkyevents.ro/",
-    image: `https://api.microlink.io/?url=https://radio.djfunkyevents.ro/&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1280&viewport.height=800`,
+    image: screenshot("https://radio.djfunkyevents.ro/"),
     tags: ["Radio Live", "Streaming", "Audio"],
   },
 ];
