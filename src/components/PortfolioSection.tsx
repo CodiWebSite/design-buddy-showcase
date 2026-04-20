@@ -1,7 +1,7 @@
 import { ExternalLink, ArrowUpRight } from "lucide-react";
 
-const screenshot = (url: string) =>
-  `https://image.thum.io/get/width/1280/crop/800/noanimate/${url}`;
+const screenshot = (url: string, wait = 3) =>
+  `https://image.thum.io/get/width/1280/crop/800/wait/${wait}/noanimate/${url}`;
 
 const portfolioItems = [
   {
@@ -25,7 +25,7 @@ const portfolioItems = [
     category: "Portfolio Artistic",
     description: "Site personal pentru DJ Cozo cu design imersiv, animații premium și prezentare artistică.",
     url: "https://dj-cozo.ro/",
-    image: screenshot("https://dj-cozo.ro/"),
+    image: screenshot("https://dj-cozo.ro/", 8),
     tags: ["Portfolio", "Animații", "Design Premium"],
   },
   {
