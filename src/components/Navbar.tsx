@@ -20,13 +20,13 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/85 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-20 lg:h-24">
-          <a href="#acasa" className="flex items-center" aria-label="WebCraft - acasă">
+          <Link to="/" className="flex items-center" aria-label="WebCraft - acasă">
             <img
               src={logo}
               alt="WebCraft"
               className="h-12 lg:h-14 w-auto drop-shadow-[0_4px_20px_hsl(var(--primary)/0.4)]"
             />
-          </a>
+          </Link>
 
           <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
