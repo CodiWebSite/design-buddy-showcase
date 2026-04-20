@@ -266,65 +266,118 @@ export function generateAuditPdf(result: AuditResult): jsPDF {
     pdf.text(truncated, 75, y);
     y += 6;
   }
+  // ===== ISSUES GROUPED BY SEVERITY =====
+  const groups: { key: "critical" | "warning" | "info" | "success"; label: string; sublabel: string }[] = [
+    { key: "critical", label: "Probleme critice", sublabel: "Necesita actiune imediata" },
+    { key: "warning", label: "Probleme importante", sublabel: "Recomandam remediere in scurt timp" },
+    { key: "info", label: "Recomandari & optionale", sublabel: "Imbunatatiri suplimentare" },
+    { key: "success", label: "Verificate cu succes", sublabel: "Aspecte care functioneaza bine" },
+  ];
+
+  const grouped = groups.map((g) => ({
+    ...g,
+    items: result.issues.filter((i) => i.severity === g.key),
+  }));
+
+  // ----- Sumar pe nivele -----
   y += 8;
-  ensureSpace(20);
+  ensureSpace(50);
   pdf.setTextColor(15, 23, 42);
   pdf.setFontSize(16);
   pdf.setFont("helvetica", "bold");
-  pdf.text(`Probleme detectate (${result.issues.length})`, 20, y);
+  pdf.text(`Sumar probleme (${result.issues.length} in total)`, 20, y);
   y += 8;
 
+  const cardW = (W - 40 - 9) / 4; // 4 carduri cu 3mm gap
+  const startX = 20;
+  ensureSpace(28);
+  grouped.forEach((g, idx) => {
+    const x = startX + idx * (cardW + 3);
+    const col = SEVERITY_COLOR[g.key];
+    pdf.setFillColor(248, 250, 252);
+    pdf.roundedRect(x, y, cardW, 24, 2, 2, "F");
+    pdf.setFillColor(...col);
+    pdf.rect(x, y, 2, 24, "F");
+    pdf.setTextColor(...col);
+    pdf.setFontSize(20);
+    pdf.setFont("helvetica", "bold");
+    pdf.text(String(g.items.length), x + 5, y + 11);
+    pdf.setTextColor(15, 23, 42);
+    pdf.setFontSize(8);
+    pdf.setFont("helvetica", "bold");
+    pdf.text(clean(g.label), x + 5, y + 17, { maxWidth: cardW - 7 });
+    pdf.setTextColor(100, 116, 139);
+    pdf.setFontSize(7);
+    pdf.setFont("helvetica", "normal");
+    pdf.text(clean(g.sublabel), x + 5, y + 21, { maxWidth: cardW - 7 });
+  });
+  y += 30;
+
   if (result.issues.length === 0) {
+    ensureSpace(20);
     pdf.setFontSize(11);
     pdf.setFont("helvetica", "normal");
     pdf.setTextColor(34, 197, 94);
     pdf.text(clean("Felicitari! Nu am detectat probleme majore."), 20, y);
   } else {
-    // Sort by severity
-    const order = { critical: 0, warning: 1, info: 2, success: 3 };
-    const sorted = [...result.issues].sort((a, b) => order[a.severity] - order[b.severity]);
+    // ----- Render fiecare grupa cu probleme -----
+    for (const g of grouped) {
+      if (g.items.length === 0) continue;
+      const sevColor = SEVERITY_COLOR[g.key];
 
-    for (const issue of sorted) {
-      const sevColor = SEVERITY_COLOR[issue.severity];
-      const titleLines = pdf.splitTextToSize(clean(issue.title), W - 50);
-      const descLines = pdf.splitTextToSize(clean(issue.description), W - 50);
-      const recLines = pdf.splitTextToSize(clean(`Recomandare: ${issue.recommendation}`), W - 50);
-      const blockH = 8 + titleLines.length * 5 + descLines.length * 4.5 + recLines.length * 4.5 + 8;
-      ensureSpace(blockH);
-
-      // Severity tag
+      ensureSpace(22);
+      // Header de grupa
       pdf.setFillColor(...sevColor);
-      pdf.roundedRect(20, y, 22, 5.5, 1, 1, "F");
-      pdf.setTextColor(255, 255, 255);
-      pdf.setFontSize(8);
-      pdf.setFont("helvetica", "bold");
-      pdf.text(SEVERITY_LABEL[issue.severity].toUpperCase(), 31, y + 3.8, { align: "center" });
-
-      pdf.setTextColor(100, 116, 139);
-      pdf.setFontSize(8);
-      pdf.setFont("helvetica", "normal");
-      pdf.text(clean(CATEGORY_LABELS[issue.category]), 45, y + 3.8);
-
-      y += 9;
+      pdf.roundedRect(20, y, 4, 10, 1, 1, "F");
       pdf.setTextColor(15, 23, 42);
-      pdf.setFontSize(11);
+      pdf.setFontSize(15);
       pdf.setFont("helvetica", "bold");
-      pdf.text(titleLines, 20, y);
-      y += titleLines.length * 5 + 1;
+      pdf.text(`${clean(g.label)} (${g.items.length})`, 28, y + 7);
+      y += 14;
 
-      pdf.setTextColor(71, 85, 105);
-      pdf.setFontSize(9.5);
-      pdf.setFont("helvetica", "normal");
-      pdf.text(descLines, 20, y);
-      y += descLines.length * 4.5 + 1;
+      for (const issue of g.items) {
+        const titleLines = pdf.splitTextToSize(clean(issue.title), W - 50);
+        const descLines = pdf.splitTextToSize(clean(issue.description), W - 50);
+        const recLines = pdf.splitTextToSize(clean(`Recomandare: ${issue.recommendation}`), W - 50);
+        const blockH = 8 + titleLines.length * 5 + descLines.length * 4.5 + recLines.length * 4.5 + 8;
+        ensureSpace(blockH);
 
-      pdf.setTextColor(37, 99, 235);
-      pdf.setFontSize(9.5);
-      pdf.text(recLines, 20, y);
-      y += recLines.length * 4.5 + 6;
+        // Severity tag
+        pdf.setFillColor(...sevColor);
+        pdf.roundedRect(20, y, 22, 5.5, 1, 1, "F");
+        pdf.setTextColor(255, 255, 255);
+        pdf.setFontSize(8);
+        pdf.setFont("helvetica", "bold");
+        pdf.text(SEVERITY_LABEL[issue.severity].toUpperCase(), 31, y + 3.8, { align: "center" });
 
-      pdf.setDrawColor(241, 245, 249);
-      pdf.line(20, y - 2, W - 20, y - 2);
+        pdf.setTextColor(100, 116, 139);
+        pdf.setFontSize(8);
+        pdf.setFont("helvetica", "normal");
+        pdf.text(clean(CATEGORY_LABELS[issue.category]), 45, y + 3.8);
+
+        y += 9;
+        pdf.setTextColor(15, 23, 42);
+        pdf.setFontSize(11);
+        pdf.setFont("helvetica", "bold");
+        pdf.text(titleLines, 20, y);
+        y += titleLines.length * 5 + 1;
+
+        pdf.setTextColor(71, 85, 105);
+        pdf.setFontSize(9.5);
+        pdf.setFont("helvetica", "normal");
+        pdf.text(descLines, 20, y);
+        y += descLines.length * 4.5 + 1;
+
+        pdf.setTextColor(37, 99, 235);
+        pdf.setFontSize(9.5);
+        pdf.text(recLines, 20, y);
+        y += recLines.length * 4.5 + 6;
+
+        pdf.setDrawColor(241, 245, 249);
+        pdf.line(20, y - 2, W - 20, y - 2);
+      }
+
+      y += 4;
     }
   }
 
