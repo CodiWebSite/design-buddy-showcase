@@ -8,10 +8,12 @@ import type { AuditResult } from "./types";
 export async function saveAudit(result: AuditResult): Promise<string | null> {
   const { data, error } = await supabase
     .from("audits")
-    .insert({
-      url: result.url,
-      result: result as unknown as Record<string, unknown>,
-    })
+    .insert([
+      {
+        url: result.url,
+        result: result as unknown as Record<string, unknown>,
+      },
+    ])
     .select("id")
     .single();
 
