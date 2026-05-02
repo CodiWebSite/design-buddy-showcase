@@ -6,6 +6,7 @@ import AuditForm from "@/components/audit/AuditForm";
 import AuditLoader from "@/components/audit/AuditLoader";
 import AuditDashboard from "@/components/audit/AuditDashboard";
 import { runAudit } from "@/lib/audit/runAudit";
+import { saveAudit } from "@/lib/audit/saveAudit";
 import type { AuditResult } from "@/lib/audit/types";
 import { useToast } from "@/hooks/use-toast";
 
@@ -14,14 +15,20 @@ const Audit = () => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(0);
   const [result, setResult] = useState<AuditResult | null>(null);
+  const [shareId, setShareId] = useState<string | null>(null);
 
   const handleAudit = async (url: string) => {
     setLoading(true);
     setResult(null);
+    setShareId(null);
     setStep(0);
     try {
       const res = await runAudit(url, (s) => setStep(s));
       setResult(res);
+      // Persist audit in the background so the user gets a shareable link.
+      saveAudit(res).then((id) => {
+        if (id) setShareId(id);
+      });
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Eroare necunoscută";
       toast({
@@ -36,6 +43,7 @@ const Audit = () => {
 
   const handleReset = () => {
     setResult(null);
+    setShareId(null);
     setStep(0);
   };
 
@@ -118,7 +126,7 @@ const Audit = () => {
 
             {result && (
               <div className="max-w-4xl mx-auto">
-                <AuditDashboard result={result} onReset={handleReset} />
+                <AuditDashboard result={result} onReset={handleReset} shareId={shareId} />
               </div>
             )}
           </div>
