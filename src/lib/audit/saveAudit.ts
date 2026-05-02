@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import type { AuditResult } from "./types";
 
 /**
@@ -11,7 +12,7 @@ export async function saveAudit(result: AuditResult): Promise<string | null> {
     .insert([
       {
         url: result.url,
-        result: result as unknown as Record<string, unknown>,
+        result: JSON.parse(JSON.stringify(result)) as Json,
       },
     ])
     .select("id")
