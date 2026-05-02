@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Audit from "./pages/Audit";
+import SharedAudit from "./pages/SharedAudit";
 import About from "./pages/About";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/termeni-si-conditii" element={<Terms />} />
           <Route path="/politica-de-confidentialitate" element={<Privacy />} />
           <Route path="/audit" element={<Audit />} />
+          <Route path="/audit/:id" element={<SharedAudit />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
