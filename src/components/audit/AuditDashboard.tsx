@@ -1,4 +1,5 @@
-import { Download, RotateCcw, Globe } from "lucide-react";
+import { Download, RotateCcw, Globe, Share2, Check } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import ScoreCircle from "./ScoreCircle";
 import CategoryCard from "./CategoryCard";
@@ -8,13 +9,15 @@ import { useToast } from "@/hooks/use-toast";
 
 interface Props {
   result: AuditResult;
-  onReset: () => void;
+  onReset?: () => void;
+  shareId?: string | null;
 }
 
 const CATEGORIES: Category[] = ["security", "seo", "performance", "ux", "infrastructure"];
 
-const AuditDashboard = ({ result, onReset }: Props) => {
+const AuditDashboard = ({ result, onReset, shareId }: Props) => {
   const { toast } = useToast();
+  const [copied, setCopied] = useState(false);
 
   const handleDownload = () => {
     try {
@@ -24,6 +27,19 @@ const AuditDashboard = ({ result, onReset }: Props) => {
       toast({ title: "PDF descărcat", description: "Raportul complet a fost salvat pe dispozitiv." });
     } catch (e) {
       toast({ title: "Eroare PDF", description: "Nu am reușit să generez PDF-ul.", variant: "destructive" });
+    }
+  };
+
+  const handleShare = async () => {
+    if (!shareId) return;
+    const link = `${window.location.origin}/audit/${shareId}`;
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopied(true);
+      toast({ title: "Link copiat", description: "Trimite linkul oricui vrei să vadă raportul." });
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      toast({ title: "Eroare", description: "Nu am putut copia linkul.", variant: "destructive" });
     }
   };
 
@@ -49,9 +65,17 @@ const AuditDashboard = ({ result, onReset }: Props) => {
           <Button variant="professional" size="lg" onClick={handleDownload}>
             <Download size={18} /> Descarcă PDF
           </Button>
-          <Button variant="outline" size="lg" onClick={onReset}>
-            <RotateCcw size={18} /> Analizează alt site
-          </Button>
+          {shareId && (
+            <Button variant="outline" size="lg" onClick={handleShare}>
+              {copied ? <Check size={18} /> : <Share2 size={18} />}
+              {copied ? "Copiat!" : "Partajează link"}
+            </Button>
+          )}
+          {onReset && (
+            <Button variant="outline" size="lg" onClick={onReset}>
+              <RotateCcw size={18} /> Analizează alt site
+            </Button>
+          )}
         </div>
       </div>
 
