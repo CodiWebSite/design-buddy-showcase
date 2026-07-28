@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ShieldCheck, Zap, Search } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -9,6 +9,7 @@ import { runAudit } from "@/lib/audit/runAudit";
 import { saveAudit } from "@/lib/audit/saveAudit";
 import type { AuditResult } from "@/lib/audit/types";
 import { useToast } from "@/hooks/use-toast";
+import Seo from "@/components/Seo";
 
 const Audit = () => {
   const { toast } = useToast();
@@ -47,32 +48,13 @@ const Audit = () => {
     setStep(0);
   };
 
-  useEffect(() => {
-    document.title = "Audit Website Gratuit - SEO, Securitate, Performanță | WebCraft";
-    const setMeta = (name: string, content: string) => {
-      let el = document.querySelector(`meta[name="${name}"]`);
-      if (!el) {
-        el = document.createElement("meta");
-        el.setAttribute("name", name);
-        document.head.appendChild(el);
-      }
-      el.setAttribute("content", content);
-    };
-    setMeta(
-      "description",
-      "Analizează gratuit site-ul tău: SEO, securitate, performanță și UX. Primește raport PDF complet cu recomandări de remediere.",
-    );
-    let canonical = document.querySelector('link[rel="canonical"]');
-    if (!canonical) {
-      canonical = document.createElement("link");
-      canonical.setAttribute("rel", "canonical");
-      document.head.appendChild(canonical);
-    }
-    canonical.setAttribute("href", "https://webcraft.djfunkyevents.ro/audit");
-  }, []);
-
   return (
     <>
+      <Seo
+        title="Audit Website Gratuit — SEO, Securitate, Performanță | WebCraft"
+        description="Analizează gratuit site-ul tău: SEO, securitate, performanță și UX. Primești raport complet cu recomandări de remediere."
+        path="/audit"
+      />
       <div className="min-h-screen bg-background">
         <Navbar />
 
