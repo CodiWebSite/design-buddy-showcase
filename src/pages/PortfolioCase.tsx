@@ -1,32 +1,44 @@
-import { useEffect } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { ArrowLeft, ExternalLink, ArrowRight, Quote, Clock, Wrench } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { portfolioCases } from "@/data/portfolioCases";
+import Seo from "@/components/Seo";
+import { useEffect } from "react";
 
 const PortfolioCasePage = () => {
   const { slug } = useParams<{ slug: string }>();
   const item = portfolioCases.find((p) => p.slug === slug);
 
   useEffect(() => {
-    if (!item) return;
-    document.title = `${item.title} — studiu de caz | WebCraft`;
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", `Cum am construit ${item.title} (${item.business}): provocare, soluție și rezultate concrete.`);
     window.scrollTo(0, 0);
-  }, [item]);
+  }, [slug]);
 
   if (!item) return <Navigate to="/#portofoliu" replace />;
 
+  const caseSchema = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: `${item.title} — studiu de caz`,
+    about: item.business,
+    description: item.detailedChallenge,
+    image: item.image,
+    url: `https://webcrafthub.ro/portofoliu/${item.slug}`,
+    creator: { "@type": "Organization", name: "WebCraft", url: "https://webcrafthub.ro/" },
+    keywords: item.tags.join(", "),
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title={`${item.title} — studiu de caz | WebCraft`}
+        description={`Cum am construit ${item.title} (${item.business}): provocare, soluție și rezultate concrete.`}
+        path={`/portofoliu/${item.slug}`}
+        image={item.image}
+        type="article"
+        jsonLd={caseSchema}
+      />
       <Navbar />
 
       <main className="pt-28 lg:pt-36 pb-20">
