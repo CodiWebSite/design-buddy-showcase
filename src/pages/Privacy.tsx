@@ -29,8 +29,8 @@ const Privacy = () => {
           <strong>Date de contact operator:</strong>
           <br />
           Email:{" "}
-          <a href="mailto:contact@webcraft.ro" className="text-primary hover:underline">
-            contact@webcraft.ro
+          <a href="mailto:contact@webcrafthub.ro" className="text-primary hover:underline">
+            contact@webcrafthub.ro
           </a>
           <br />
           Telefon:{" "}
@@ -171,8 +171,8 @@ const Privacy = () => {
         </ul>
         <p>
           Pentru exercitarea oricărui drept, scrie-ne la{" "}
-          <a href="mailto:contact@webcraft.ro" className="text-primary hover:underline">
-            contact@webcraft.ro
+          <a href="mailto:contact@webcrafthub.ro" className="text-primary hover:underline">
+            contact@webcrafthub.ro
           </a>
           . Răspundem în maxim 30 de zile.
         </p>

@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 const WHATSAPP_NUMBER = "40755649856";
 const PHONE_DISPLAY = "+40 755 649 856";
 const PHONE_HREF = "tel:+40755649856";
-const EMAIL = "contact@webcraft.ro";
+const EMAIL = "contact@webcrafthub.ro";
 
 const ContactSection = () => {
   const { toast } = useToast();
