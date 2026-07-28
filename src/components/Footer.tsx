@@ -57,7 +57,7 @@ const Footer = () => {
                 +40 755 649 856
               </a>
               <a
-                href="mailto:contact@webcraft.ro"
+                href="mailto:contact@webcrafthub.ro"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary border border-border text-foreground hover:bg-secondary/70 transition-colors text-sm font-medium"
               >
                 <Mail className="w-4 h-4 text-primary" />

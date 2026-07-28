@@ -31,8 +31,8 @@ const Terms = () => {
         <p>
           Serviciile sunt oferite de WebCraft, prin reprezentantul său legal, cu sediul în
           România. Pentru orice solicitare, ne poți contacta la{" "}
-          <a href="mailto:contact@webcraft.ro" className="text-primary hover:underline">
-            contact@webcraft.ro
+          <a href="mailto:contact@webcrafthub.ro" className="text-primary hover:underline">
+            contact@webcrafthub.ro
           </a>{" "}
           sau la telefon{" "}
           <a href="tel:+40755649856" className="text-primary hover:underline">
@@ -165,8 +165,8 @@ const Terms = () => {
       <LegalSection title="15. Contact">
         <p>
           Pentru întrebări legate de acești termeni, scrie-ne la{" "}
-          <a href="mailto:contact@webcraft.ro" className="text-primary hover:underline">
-            contact@webcraft.ro
+          <a href="mailto:contact@webcrafthub.ro" className="text-primary hover:underline">
+            contact@webcrafthub.ro
           </a>
           .
         </p>
