@@ -11,20 +11,25 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import FAQSection from "@/components/FAQSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
-import StructuredData from "@/components/StructuredData";
+import Seo from "@/components/Seo";
 
 const Index = () => {
   const breadcrumb = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Acasă", item: "https://webcraft.djfunkyevents.ro/" },
+      { "@type": "ListItem", position: 1, name: "Acasă", item: "https://webcrafthub.ro/" },
     ],
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <StructuredData id="index" schemas={[breadcrumb]} />
+      <Seo
+        title="WebCraft — Web Design Premium România"
+        description="Agenție de web design din România. Site-uri premium pentru afaceri locale și branduri personale. Hosting și suport incluse."
+        path="/"
+        jsonLd={breadcrumb}
+      />
       <Navbar />
       <HeroSection />
       <TrustBar />
