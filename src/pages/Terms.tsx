@@ -164,6 +164,7 @@ const Terms = () => {
         </p>
       </LegalSection>
     </LegalPageLayout>
+    </>
   );
 };
 
