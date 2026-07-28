@@ -1,22 +1,14 @@
-import { useEffect } from "react";
 import LegalPageLayout, { LegalSection } from "@/components/LegalPageLayout";
+import Seo from "@/components/Seo";
 
 const Privacy = () => {
-  useEffect(() => {
-    document.title = "Politica de Confidențialitate | WebCraft";
-    const meta = document.querySelector('meta[name="description"]');
-    const desc =
-      "Politica de confidențialitate WebCraft: cum colectăm, folosim și protejăm datele tale conform GDPR (Regulamentul UE 2016/679).";
-    if (meta) meta.setAttribute("content", desc);
-    else {
-      const m = document.createElement("meta");
-      m.name = "description";
-      m.content = desc;
-      document.head.appendChild(m);
-    }
-  }, []);
-
   return (
+    <>
+    <Seo
+      title="Politica de Confidențialitate | WebCraft"
+      description="Politica de confidențialitate WebCraft: cum colectăm, folosim și protejăm datele tale conform GDPR (Regulamentul UE 2016/679)."
+      path="/politica-de-confidentialitate"
+    />
     <LegalPageLayout title="Politica de Confidențialitate" updated="20 aprilie 2026">
       <LegalSection title="1. Cine suntem">
         <p>
@@ -208,6 +200,7 @@ const Privacy = () => {
         </p>
       </LegalSection>
     </LegalPageLayout>
+    </>
   );
 };
 

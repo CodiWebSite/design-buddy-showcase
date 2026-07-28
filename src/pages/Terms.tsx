@@ -1,22 +1,14 @@
-import { useEffect } from "react";
 import LegalPageLayout, { LegalSection } from "@/components/LegalPageLayout";
+import Seo from "@/components/Seo";
 
 const Terms = () => {
-  useEffect(() => {
-    document.title = "Termeni și Condiții | WebCraft";
-    const meta = document.querySelector('meta[name="description"]');
-    const desc =
-      "Termenii și condițiile de utilizare a serviciilor WebCraft: web design, dezvoltare, hosting și mentenanță în România.";
-    if (meta) meta.setAttribute("content", desc);
-    else {
-      const m = document.createElement("meta");
-      m.name = "description";
-      m.content = desc;
-      document.head.appendChild(m);
-    }
-  }, []);
-
   return (
+    <>
+    <Seo
+      title="Termeni și Condiții | WebCraft"
+      description="Termenii și condițiile de utilizare a serviciilor WebCraft: web design, dezvoltare, hosting și mentenanță în România."
+      path="/termeni-si-conditii"
+    />
     <LegalPageLayout title="Termeni și Condiții" updated="20 aprilie 2026">
       <LegalSection title="1. Introducere">
         <p>
@@ -172,6 +164,7 @@ const Terms = () => {
         </p>
       </LegalSection>
     </LegalPageLayout>
+    </>
   );
 };
 

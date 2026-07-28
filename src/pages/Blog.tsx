@@ -1,26 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { blogPosts, blogCategories } from "@/data/blogPosts";
+import Seo from "@/components/Seo";
 
 const Blog = () => {
   const [category, setCategory] = useState<(typeof blogCategories)[number]>("Toate");
-
-  useEffect(() => {
-    document.title = "Blog WebCraft | Resurse despre web design, SEO și business online";
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute(
-      "content",
-      "Articole practice despre web design, SEO, performanță și creșterea afacerilor online. Sfaturi din experiența reală a echipei WebCraft."
-    );
-  }, []);
 
   const filtered = useMemo(
     () => (category === "Toate" ? blogPosts : blogPosts.filter((p) => p.category === category)),
@@ -29,6 +16,11 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Blog WebCraft | Web design, SEO și business online"
+        description="Articole practice despre web design, SEO, performanță și creșterea afacerilor online. Sfaturi din experiența reală a echipei WebCraft."
+        path="/blog"
+      />
       <Navbar />
 
       <main className="pt-28 lg:pt-36 pb-20">

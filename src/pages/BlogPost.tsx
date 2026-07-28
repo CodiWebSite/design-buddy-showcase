@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -7,30 +6,52 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { blogPosts } from "@/data/blogPosts";
+import Seo from "@/components/Seo";
+import { useEffect } from "react";
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
   const post = blogPosts.find((p) => p.slug === slug);
 
   useEffect(() => {
-    if (!post) return;
-    document.title = `${post.title} | Blog WebCraft`;
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", post.excerpt);
     window.scrollTo(0, 0);
-  }, [post]);
+  }, [slug]);
 
   if (!post) return <Navigate to="/blog" replace />;
 
   const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 2);
 
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt,
+    image: post.cover,
+    datePublished: post.date,
+    author: { "@type": "Organization", name: post.author },
+    publisher: {
+      "@type": "Organization",
+      name: "WebCraft",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://webcrafthub.ro/favicon.png",
+      },
+    },
+    mainEntityOfPage: `https://webcrafthub.ro/blog/${post.slug}`,
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title={`${post.title} | Blog WebCraft`}
+        description={post.excerpt}
+        path={`/blog/${post.slug}`}
+        image={post.cover}
+        type="article"
+        publishedTime={post.date}
+        author={post.author}
+        jsonLd={articleSchema}
+      />
       <Navbar />
 
       <main className="pt-28 lg:pt-36 pb-20">

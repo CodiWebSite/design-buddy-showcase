@@ -13,4 +13,9 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://webcraft.djfunkyevents.ro/sitemap.xml
+# Anonymous shared audit results are not for indexing
+User-agent: *
+Disallow: /audit/
+Allow: /audit
+
+Sitemap: https://webcrafthub.ro/sitemap.xml

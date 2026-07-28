@@ -1,67 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://webcraft.djfunkyevents.ro/</loc>
+    <loc>https://webcrafthub.ro/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://webcraft.djfunkyevents.ro/despre</loc>
+    <loc>https://webcrafthub.ro/despre</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://webcraft.djfunkyevents.ro/audit</loc>
+    <loc>https://webcrafthub.ro/audit</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://webcraft.djfunkyevents.ro/blog</loc>
+    <loc>https://webcrafthub.ro/blog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://webcraft.djfunkyevents.ro/blog/cat-costa-un-site-de-prezentare-2026</loc>
+    <loc>https://webcrafthub.ro/blog/cat-costa-un-site-de-prezentare-2026</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://webcraft.djfunkyevents.ro/blog/wordpress-vs-site-custom</loc>
+    <loc>https://webcrafthub.ro/blog/wordpress-vs-site-custom</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://webcraft.djfunkyevents.ro/blog/10-greseli-seo-frecvente</loc>
+    <loc>https://webcrafthub.ro/blog/10-greseli-seo-frecvente</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://webcraft.djfunkyevents.ro/portofoliu/dj-funky-events</loc>
+    <loc>https://webcrafthub.ro/portofoliu/dj-funky-events</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://webcraft.djfunkyevents.ro/portofoliu/instalpro-pascani</loc>
+    <loc>https://webcrafthub.ro/portofoliu/instalpro-pascani</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://webcraft.djfunkyevents.ro/portofoliu/dj-cozo</loc>
+    <loc>https://webcrafthub.ro/portofoliu/dj-cozo</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://webcraft.djfunkyevents.ro/portofoliu/radio-dj-funky-events</loc>
+    <loc>https://webcrafthub.ro/portofoliu/radio-dj-funky-events</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://webcraft.djfunkyevents.ro/termeni-si-conditii</loc>
+    <loc>https://webcrafthub.ro/portofoliu/romartos</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://webcrafthub.ro/portofoliu/portidinlemn</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://webcrafthub.ro/termeni-si-conditii</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://webcraft.djfunkyevents.ro/politica-de-confidentialitate</loc>
+    <loc>https://webcrafthub.ro/politica-de-confidentialitate</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

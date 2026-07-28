@@ -1,9 +1,9 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Heart, Target, Users, Zap, ShieldCheck, Award, ArrowRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import Seo from "@/components/Seo";
 
 const values = [
   { icon: Heart, title: "Onestitate", desc: "Spunem clar ce poți și ce nu poți obține. Fără promisiuni gonflate." },
@@ -20,22 +20,13 @@ const stats = [
 ];
 
 const About = () => {
-  useEffect(() => {
-    document.title = "Despre WebCraft | Cine suntem și ce credem";
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute(
-      "content",
-      "Suntem WebCraft — echipa care construiește site-uri premium pentru afaceri din România. Află cine suntem, ce credem și cum lucrăm."
-    );
-  }, []);
-
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Despre WebCraft | Cine suntem și ce credem"
+        description="Suntem WebCraft — echipa care construiește site-uri premium pentru afaceri din România. Află cine suntem, ce credem și cum lucrăm."
+        path="/despre"
+      />
       <Navbar />
 
       <main className="pt-28 lg:pt-36 pb-20">
