@@ -143,4 +143,62 @@ export const portfolioCases: PortfolioCase[] = [
     technologies: ["React", "PWA", "Streaming API", "Tailwind CSS"],
     duration: "2 săptămâni",
   },
+  {
+    slug: "romartos",
+    title: "Romartos",
+    business: "Producător mobilier & tâmplărie",
+    url: "https://romartos.ro/",
+    image: screenshot("https://romartos.ro/"),
+    tags: ["Prezentare", "Catalog", "Local SEO"],
+    challenge:
+      "Avea nevoie de o vitrină online care să prezinte profesionist produsele și să atragă clienți noi.",
+    solution:
+      "Site de prezentare cu galerie de produse, secțiuni clare de servicii și formular de contact.",
+    detailedChallenge:
+      "Afacere cu tradiție în producția de mobilier și tâmplărie, dar fără prezență online serioasă. Clienții potențiali nu aveau cum să vadă calitatea lucrărilor înainte de a suna, iar cererile veneau greu și doar prin recomandări.",
+    detailedSolution: [
+      "Design curat, cu accent pe fotografiile produselor și texturile lemnului.",
+      "Structură clară: produse, servicii personalizate, portofoliu lucrări realizate.",
+      "Formular de cerere ofertă cu detalii tehnice (dimensiuni, material, finisaj).",
+      "SEO local pentru căutări de tip 'mobilier la comandă', 'tâmplărie lemn masiv'.",
+      "Optimizat pentru mobil — majoritatea clienților caută de pe telefon.",
+    ],
+    results: [
+      { label: "Cereri ofertă/lună", value: "+220%" },
+      { label: "Trafic organic", value: "+280%" },
+      { label: "Scor PageSpeed", value: "93" },
+      { label: "Poziție Google", value: "Top 5" },
+    ],
+    technologies: ["React", "Tailwind CSS", "Schema.org", "Local SEO"],
+    duration: "4 săptămâni",
+  },
+  {
+    slug: "portidinlemn",
+    title: "Porți din Lemn",
+    business: "Producător porți & garduri lemn",
+    url: "https://portidinlemn.ro/",
+    image: screenshot("https://portidinlemn.ro/"),
+    tags: ["Catalog", "Galerie", "Conversie"],
+    challenge:
+      "Voia să transforme site-ul într-un instrument real de vânzare, nu doar o carte de vizită online.",
+    solution:
+      "Site orientat pe conversie cu galerie extinsă, modele detaliate și CTA-uri clare pentru ofertă.",
+    detailedChallenge:
+      "Piața porților din lemn e competitivă și clienții compară mult înainte să sune. Site-ul vechi nu convingea vizual și nu avea o structură care să ducă utilizatorul spre o cerere de ofertă.",
+    detailedSolution: [
+      "Galerie mare cu modele de porți și garduri, categorisite pe stiluri.",
+      "Pagini dedicate fiecărui tip de produs cu detalii despre lemn, tratamente și garanție.",
+      "CTA-uri vizibile în fiecare secțiune: cerere ofertă, WhatsApp, telefon.",
+      "Testimoniale și proiecte realizate pentru încredere.",
+      "Optimizare SEO pe cuvinte cu intenție comercială clară.",
+    ],
+    results: [
+      { label: "Cereri ofertă/lună", value: "+190%" },
+      { label: "Timp pe site", value: "3:20 min" },
+      { label: "Scor PageSpeed", value: "91" },
+      { label: "Conversie formular", value: "7.4%" },
+    ],
+    technologies: ["React", "Tailwind CSS", "SEO", "Schema.org"],
+    duration: "4 săptămâni",
+  },
 ];
