@@ -74,7 +74,7 @@ const Footer = () => {
                 Facebook
               </a>
               <a
-                href="https://www.instagram.com/webcrafthub"
+                href="https://www.instagram.com/webcraftromania/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
