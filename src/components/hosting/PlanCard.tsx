@@ -38,6 +38,11 @@ const PlanCard = ({ plan, period }: Props) => {
       </div>
 
       <div className="mb-7 border-y border-border py-6">
+        {period === "12" && (
+          <span className="mb-3 inline-block rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-primary">
+            Cea mai avantajoasă alegere
+          </span>
+        )}
         <div className="flex items-end gap-1.5">
           <span
             key={`${plan.id}-${period}`}
@@ -54,6 +59,11 @@ const PlanCard = ({ plan, period }: Props) => {
         {months > 1 && price.save > 0 && (
           <p className="mt-1.5 inline-block rounded-md bg-primary/10 px-2 py-1 text-xs font-semibold text-primary">
             Economisești {price.save} Lei
+          </p>
+        )}
+        {period === "12" && (
+          <p className="mt-2 text-xs text-muted-foreground">
+            Economisești până la 15% comparativ cu plata lunară.
           </p>
         )}
       </div>
@@ -79,7 +89,7 @@ const PlanCard = ({ plan, period }: Props) => {
           href={href}
           {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
         >
-          Alege Pachetul
+          {plan.cta ?? "Alege Pachetul"}
         </a>
       </Button>
     </div>
