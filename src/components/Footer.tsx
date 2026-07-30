@@ -1,4 +1,4 @@
-import { Mail, Phone, MessageCircle, Facebook } from "lucide-react";
+import { Mail, Phone, MessageCircle, Facebook, Instagram } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/webcraft-logo.png";
 
@@ -72,6 +72,16 @@ const Footer = () => {
               >
                 <Facebook className="w-4 h-4 text-primary" />
                 Facebook
+              </a>
+              <a
+                href="https://www.instagram.com/webcrafthub"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary border border-border text-foreground hover:bg-secondary/70 transition-colors text-sm font-medium"
+              >
+                <Instagram className="w-4 h-4 text-primary" />
+                Instagram
               </a>
             </div>
           </div>
